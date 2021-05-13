@@ -1,0 +1,116 @@
+import numpy as np
+
+class nodos():
+
+    punto_final=[]
+    numNodos=1
+
+    def __init__(self,_ubicacion,_nodo_anterior):
+        
+        self.ubicacion = _ubicacion
+        self.camino_recorridoant=_nodo_anterior.camino_recorrido
+        self.camino_recorrido = self.camino_recorridoant + self.dis_euc(self.ubicacion,_nodo_anterior.ubicacion)
+        self.heuristica = self.dis_euc(self.ubicacion,nodos.punto_final)
+        self.F = self.camino_recorrido + self.heuristica
+        self.numAnt = _nodo_anterior.num
+        self.num=nodos.numNodos
+        nodos.numNodos += 1
+
+    def dis_euc(self,vec1,vec2):
+        return (np.sum(abs(np.array(vec1)-np.array(vec2))**2))**0.5
+
+class nodo_inicial():
+
+    def __init__(self,ubicacion):
+        self.ubicacion = ubicacion
+        self.camino_recorridoant=0
+        self.camino_recorrido = 0
+        self.heuristica = 0
+        self.F = 0
+        self.numAnt = -1
+        self.num=0
+
+
+class A_star():
+
+
+    def __init__(self,punto_incial,_punto_final,_dim,_paso,_obstaculos):
+
+        self.Fun_busqueda=[]
+        self.lista_abierta=[]
+        self.lista_cerrada=[]
+        nodos.punto_final=_punto_final
+        nodos.numNodos=1
+        self.punto_final=_punto_final
+        self.nodo_explorar=nodo_inicial(punto_incial)
+        self.lista_abierta.append(self.nodo_explorar)
+        self.Fun_busqueda.append(self.nodo_explorar.F)
+        self.lista_cerrada.append(self.nodo_explorar.ubicacion)
+        self.dim=_dim
+        self.paso=_paso
+        self.obstaculos=_obstaculos
+
+    def neighbors(self,ubicacion,it=0):
+
+        if self.dim>it:
+
+            for i in range(self.dim-it):
+                vec_der=ubicacion.copy()
+                vec_izq=ubicacion.copy()
+                vec_der[i+it]=ubicacion[i+it]+self.paso
+                vec_izq[i+it]=ubicacion[i+it]-self.paso
+                
+                self.lista_abierta.append(nodos(vec_der,self.nodo_explorar))
+                self.Fun_busqueda.append(self.lista_abierta[-1].F)
+
+                self.lista_abierta.append(nodos(vec_izq,self.nodo_explorar))
+                self.Fun_busqueda.append(self.lista_abierta[-1].F)
+
+                self.neighbors(vec_izq,it+1+i)
+                self.neighbors(vec_der,it+1+i)
+    
+    def buscar_camino(self):
+
+        iterar=True
+        ent=True
+
+        while (iterar):
+
+            self.neighbors(self.nodo_explorar.ubicacion)
+
+            it=True
+            
+
+            while(it):
+                
+                ent=True
+                ff=self.Fun_busqueda.index(min(self.Fun_busqueda))
+                nodo_aux=self.lista_abierta[ff]
+
+                if (nodo_aux.ubicacion == self.punto_final):
+
+                    camino_nodos=[nodo_aux.ubicacion]
+
+                    while (nodo_aux.numAnt!=-1):
+                        nodo_aux=self.lista_abierta[nodo_aux.numAnt]
+                        camino_nodos.append(nodo_aux.ubicacion)
+                    return camino_nodos
+
+                if (nodo_aux.ubicacion in self.obstaculos): 
+
+                    self.Fun_busqueda[ff]=10e38
+                    ent=False
+
+                if (nodo_aux.ubicacion in self.lista_cerrada) :
+
+                    self.Fun_busqueda[ff]=10e38
+                    ent=False
+
+                if (ent):
+
+                    self.lista_cerrada.append(self.lista_abierta[ff].ubicacion)
+                    self.nodo_explorar=self.lista_abierta[ff]
+                    self.Fun_busqueda[ff]=10e38
+                    it=False
+                
+
