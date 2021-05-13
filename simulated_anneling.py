@@ -60,8 +60,8 @@ class anneling():
 
         for i in range(self.t):
 
+            print("Variacion Temperatura",self.T[i])
             if self.T[i]==0:
-
                 return self.energy(self.actual_state.copy(),length=False),self.actual_state,self.list_energy
 
             self.next_stateaux=self.next_state()
