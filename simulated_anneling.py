@@ -24,7 +24,7 @@ class anneling():
 
         aux=self.actual_state.copy()
         index=random.sample(range(self.d),2)
-        aux[index[0]],aux[index[1]]=self.actual_state[index[1]],self.actual_state[index[0]]
+        aux[index[0]],aux[index[1]] = self.actual_state[index[1]],self.actual_state[index[0]]
         
         return aux
             #if (aux in self.next_statelist):
