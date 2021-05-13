@@ -5,19 +5,28 @@ from A_estrella import A_star,nodos,nodo_inicial
 
 class anneling(): 
 
-    def __init__(self,_order,_T,_obstaculos,_spatialdimension,inicio):
+    def __init__(self,_order,_T,_obstaculos,_spatialdimension,inicio,list_fin,fin=False):
+
         self.order=_order
         self.tolerancia = 10**(-4) # cuando la temperatura esta muy cerca de cero termina
         self.T=_T
         self.t=len(_T)
         self.d=len(self.order)
+        self.d2=self.d
         self.ds=_spatialdimension
         self.obstaculos=_obstaculos
         self.actual_state=_order
         self.next_stateaux=[]
         self.start=inicio
+        self.end=fin
+        self.list_end=list_fin
+        
+        if self.end==False:
+            self.d2=self.d2-1
+
         self.list_energy=[]
         self.E1=self.energy(self.actual_state.copy())
+
 
     def next_state(self):
         #it=0
@@ -43,10 +52,14 @@ class anneling():
         
         list_way=[]
         way=0
-        state.append(self.start)
+
+        if (self.end):
+            state.append(self.list_end)
+            
+          
         state.insert(0,self.start)
 
-        for i in range(self.d+1):
+        for i in range(self.d2+1):
 
             A_object=A_star(state[i+1],state[i],self.ds,1,self.obstaculos)
 
@@ -72,7 +85,7 @@ class anneling():
         for i in range(self.t):
             it+=1
             #print("Variacion Temperatura",self.T[i])
-            if abs(self.T[i])<self.tolerancia or it==100:
+            if abs(self.T[i])==0 or it==100:
                 return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
 
             self.next_stateaux=self.next_state()
