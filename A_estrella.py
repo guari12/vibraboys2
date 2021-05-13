@@ -69,7 +69,7 @@ class A_star():
                 self.neighbors(vec_izq,it+1+i)
                 self.neighbors(vec_der,it+1+i)
     
-    def buscar_camino(self):
+    def buscar_camino(self,camino_total=False):
 
         iterar=True
         ent=True
@@ -91,10 +91,16 @@ class A_star():
 
                     camino_nodos=[nodo_aux.ubicacion]
 
-                    while (nodo_aux.numAnt!=-1):
-                        nodo_aux=self.lista_abierta[nodo_aux.numAnt]
-                        camino_nodos.append(nodo_aux.ubicacion)
-                    return camino_nodos
+                    if camino_total==True:
+
+                        while (nodo_aux.numAnt!=-1):
+                            nodo_aux=self.lista_abierta[nodo_aux.numAnt]
+                            camino_nodos.append(nodo_aux.ubicacion)
+                        return camino_nodos
+
+                    else:
+                        
+                        return nodo_aux.camino_recorrido
 
                 if (nodo_aux.ubicacion in self.obstaculos): 
 

@@ -39,37 +39,48 @@ class anneling():
             
             #it+=1
     
-    def energy(self,state,length=True):
+    def energy(self,state,camino_total=False):
         
-        way=[]
+        list_way=[]
+        way=0
         state.append(self.start)
         state.insert(0,self.start)
-        for i in range(self.d+1):
-            A_object=A_star(state[i+1],state[i],self.ds,1,self.obstaculos)
-            way.extend(A_object.buscar_camino())
 
-        if (length):
-            return len(way)
+        for i in range(self.d+1):
+
+            A_object=A_star(state[i+1],state[i],self.ds,1,self.obstaculos)
+
+            if camino_total==True:
+                
+                list_way.extend(A_object.buscar_camino(camino_total=True))
+            
+            else:
+                way+=A_object.buscar_camino()
+
+        if camino_total==True:
+            return list_way
         else:
             return way
+
 
     def probability(self,delta_energy,Temp):
 
         return math.exp(delta_energy/Temp)
 
     def search(self):
-
+        it=0
         for i in range(self.t):
-
+            it+=1
             #print("Variacion Temperatura",self.T[i])
-            if abs(self.T[i])<=abs(self.tolerancia):
-                return self.energy(self.actual_state.copy(),length=False),self.actual_state,self.list_energy
+            if abs(self.T[i])<self.tolerancia or it==100:
+                return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
 
             self.next_stateaux=self.next_state()
             E2=self.energy(self.next_stateaux.copy())
             deltaenergy=self.E1-E2
 
             if deltaenergy>0:
+                it=0
                 self.actual_state=self.next_stateaux
                 self.E1=E2
 

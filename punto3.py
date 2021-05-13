@@ -54,23 +54,24 @@ for i in range(16):
 #     list_order.append(list_aux2)
     
 list_order=[]
-order_aux=random.sample(range(120),20)
-for i in range(10):
+order_aux=random.sample(range(120),5)
+for i in range(1):
     
     list_order.append(order_aux)
 
 
 #Ley de enfriamiento
-T=[10000]
+T=[1000]
 it=1
-for i in range(699):
+for i in range(100):
     # if i %100==0 and it<4 :
     #     it+=1
     #     T.append(10)
     # else:
-    T.append(T[-1]/1.05)
+    T.append(T[-1]/1.3)
 T[-1]=0
 
+time_ini=time.time()
 #Se realiza el temple orden por orden
 for order in list_order:
 
@@ -86,7 +87,7 @@ for order in list_order:
 
             it +=1
 
-    temple=anneling(list_order2,700,T,osbtaculos,2,[0,0])
+    temple=anneling(list_order2,T,osbtaculos,2,[0,0])
     [way,resultado,E]=temple.search()
 
 
@@ -98,7 +99,7 @@ for order in list_order:
 
     plt.plot(np.linspace(0,(len(E)-1),len(E)),np.array(E))
 
-
+tim=time.time()-time_ini
 
 for i in way:
     lista_A[i[0]][i[1]]="O"
@@ -116,6 +117,7 @@ for q in lista_A:
 
 print(f"El mejor camino para realizar las ordenes {order} es: {order2} \n\n")
 print(stirng.replace("O",Fore.RED+ Style.BRIGHT+"O"+Style.RESET_ALL).replace("P",Fore.GREEN+ Style.BRIGHT+"P"+Style.RESET_ALL))
+print(tim)
 plt.plot(np.linspace(0,(len(T)-1),len(T)),np.array(T))
 
 plt.show()
