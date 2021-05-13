@@ -7,6 +7,7 @@ class anneling():
 
     def __init__(self,_order,_t,_T,_obstaculos,_spatialdimension,inicio):
         self.order=_order
+        self.tolerancia = 10**(-4) # cuando la temperatura esta muy cerca de cero termina
         self.t=_t
         self.T=_T
         self.d=len(self.order)
@@ -61,7 +62,7 @@ class anneling():
         for i in range(self.t):
 
             print("Variacion Temperatura",self.T[i])
-            if self.T[i]==0:
+            if abs(self.T[i])<=abs(self.tolerancia):
                 return self.energy(self.actual_state.copy(),length=False),self.actual_state,self.list_energy
 
             self.next_stateaux=self.next_state()
