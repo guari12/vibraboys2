@@ -29,25 +29,14 @@ class anneling():
 
 
     def next_state(self):
-        #it=0
-        #while(True):
 
         aux=self.actual_state.copy()
         index=random.sample(range(self.d),2)
         aux[index[0]],aux[index[1]] = self.actual_state[index[1]],self.actual_state[index[0]]
         
         return aux
-            #if (aux in self.next_statelist):
-            #    pass
 
-            #else:
-            #    return aux
-
-            #if (it==1000):
-             #   return aux
-            
-            #it+=1
-    
+    #Devuelve la energia del conjunto de ordenes o el camino
     def energy(self,state,camino_total=False):
         
         list_way=[]
@@ -85,7 +74,7 @@ class anneling():
         for i in range(self.t):
             it+=1
             #print("Variacion Temperatura",self.T[i])
-            if abs(self.T[i])<self.tolerancia or it==100:
+            if abs(self.T[i])==0 or it==0 :
                 return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
 
             self.next_stateaux=self.next_state()
