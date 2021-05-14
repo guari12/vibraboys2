@@ -85,7 +85,7 @@ class anneling():
         for i in range(self.t):
             it+=1
             #print("Variacion Temperatura",self.T[i])
-            if abs(self.T[i])==0 or it==100:
+            if abs(self.T[i])<self.tolerancia or it==100:
                 return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
 
             self.next_stateaux=self.next_state()
