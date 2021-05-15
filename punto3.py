@@ -20,7 +20,7 @@ len_enfria=200  #Longitud de la ley de enfriamiento
 coef_exp=1.5    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
 cant_ordenes=1  #Cantidad de ordenes
-len_ordenes=20  #Longitud de ordenes
+len_ordenes=5  #Longitud de ordenes
 
 E2=np.zeros((len_enfria))
 list_E2=[]
