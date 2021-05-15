@@ -7,7 +7,7 @@ import numpy as np
 from colorama import Fore,Style
 import matplotlib.pyplot as plt
 import time
-from simulated_anneling import anneling
+from simulated_anneling import anneling, layout, ley_enfriamiento
 
 
 colorama.init() #Libreria que me permite camibar el color de salida del print()
@@ -22,47 +22,13 @@ tem_max=5000    #Temperatur maxima
 cant_ordenes=1  #Cantidad de ordenes
 len_ordenes=20  #Longitud de ordenes
 
-it=0
-aa=1
 E2=np.zeros((len_enfria))
 list_E2=[]
 
 
 
 # Se crea el layout asignando un numero a cada estanteria y con '*' a los pasillos
-for i in range(13):
-
-    lista_aux=[]
-
-    if i%4==0:
-        lista_aux.extend( ["*" for j in range(19)])
-    else:
-
-        for j in range(19):
-            if aa%3==1:
-                lista_aux.append("*")
-            
-            else:
-                it +=1
-                lista_aux.append(it)
-                osbtaculos.append([i,j])
-            aa +=1
-    lista_A.append(lista_aux)
-    aa=1
-
-# #Lee las ordenes de un archivo
-# archivo=open('orders.txt')
-# ordertxt=archivo.read()
-# list_order=[]
-# for i in range(1,100):
-#     index1=ordertxt.find('Order'+' '+f'{i}')
-#     index2=ordertxt.find('Order'+' '+f'{i+1}')
-#     aux=ordertxt[(index1+len('Order'+' '+f'{i}')):index2]
-#     list_aux2=aux.split('\nP')
-#     list_aux2.pop(0)
-#     list_aux2[-1]=list_aux2[-1].replace('\n\n','')
-#     list_aux2=list(map(int,list_aux2))
-#     list_order.append(list_aux2)
+[lista_A,osbtaculos]=layout()
 
 
 #Genera ordenes aleatorias
@@ -77,15 +43,7 @@ for i in range(cant_ordenes):
 
 
 #Ley de enfriamiento
-T=[tem_max]
-it=1
-for i in range(len_enfria):
-    # if i %100==0 and it<4 :
-    #     it+=1
-    #     T.append(10)
-    # else:
-    T.append(T[-1]/coef_exp)
-T[-1]=0
+T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 
 time_ini=time.time()
 

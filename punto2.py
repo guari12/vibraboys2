@@ -50,8 +50,7 @@ for q in lista_A:
 
 #Se realiza la busqueda con el algoritmo A*
 posicion=A_star(aux1,aux2,2,1,osbtaculos)
-posicion_int=posicion.buscar_camino()
-
+posicion_int=posicion.buscar_camino(camino_total=True)
 #Se acondicionan los datos para ser mostrados
 for i in posicion_int:
     lista_A[i[0]][i[1]]="O"
