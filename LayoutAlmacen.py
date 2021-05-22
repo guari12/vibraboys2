@@ -64,7 +64,7 @@ class Almacen():
                                 "y":y,
                                 "almacen":True,
                                 "almacen_id":_almacen_id, #id de almacen
-                                "producto":None
+                                "producto":_almacen_id
                                 }
                     if plot:
                         #print(_almacen_id,end=" ")
