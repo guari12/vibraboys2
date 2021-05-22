@@ -7,16 +7,8 @@ class Almacen():
     row = 3
 
     estanterias_X_size = 2
-    estanterias_X = list(range(1,estanterias_X_size+1))
     estanterias_Y_size = 3
-    estanterias_Y = list(range(1,estanterias_Y_size+1))
     pasillos = 1
-
-    limits_x = [0,col*(estanterias_X_size+pasillos)+1]
-    limits_y = [0,row*(estanterias_Y_size+pasillos)+1]
-    limits = [limits_x,limits_y]
-
-    Dist_Estantes = [estanterias_X,estanterias_X_size,estanterias_Y,estanterias_Y_size]
 
     def __init__(self,col=None,row=None,estantesX=None,estantesY=None,pasillos=None,plot=False):
         if col == None:
@@ -43,8 +35,8 @@ class Almacen():
         else:
             self.pasillos = pasillos
 
-        self.limits_x = [0,col*(self.estanterias_X_size+self.pasillos)+1]
-        self.limits_y = [0,row*(self.estanterias_Y_size+self.pasillos)+1]
+        self.limits_x = [0,self.col*(self.estanterias_X_size+self.pasillos)+1]
+        self.limits_y = [0,self.row*(self.estanterias_Y_size+self.pasillos)+1]
         self.limits = [self.limits_x,self.limits_y]
 
         self.Dist_Estantes = [  self.estanterias_X,
@@ -53,33 +45,36 @@ class Almacen():
                                 self.estanterias_Y_size     ]
         
         self.matriz_deposito = []
-        self.estanterias = []
+        self.estanterias = [] #Guardo los objetos estanterias
+        self.obstaculos = [] #guardo posiciones X,Y
 
         _id = 1
         _almacen_id = 1
 
         # Llenar la matriz del almacen (se comento el mapa)
-        for y in range(Almacen.limits[1][1]): #limite en Y
-            for x in range(Almacen.limits[0][1]): #limite en X
-                xx = x%(Almacen.estanterias_X_size+Almacen.pasillos)
-                yy = y%(Almacen.estanterias_Y_size+Almacen.pasillos)
+        for y in range(self.limits[1][1]): #limite en Y
+            for x in range(self.limits[0][1]): #limite en X
+                xx = x%(self.estanterias_X_size+self.pasillos)
+                yy = y%(self.estanterias_Y_size+self.pasillos)
                 #print(f"X: {x} ({xx}), Y: {y} ({yy})",end="\t")
-                if (xx in Almacen.estanterias_X) and (yy in Almacen.estanterias_Y):
+                if (xx in self.estanterias_X) and (yy in self.estanterias_Y):
                     elemento = {"id":_id,
-                                "almacen_id":_almacen_id, #id de almacen
                                 "pos":[x,y],
                                 "x":x,
                                 "y":y,
-                                "almacen":True
+                                "almacen":True,
+                                "almacen_id":_almacen_id, #id de almacen
+                                "producto":None
                                 }
                     if plot:
+                        #print(_almacen_id,end=" ")
                         print("#",end=" ") #Almacen
                     _almacen_id += 1
-                    self.estanterias.append([x,y])
+                    self.estanterias.append(elemento)
+                    self.obstaculos.append([x,y])
 
                 else:
                     elemento = {"id":_id,
-                                "almacen_id":None, #id de almacen
                                 "pos":[x,y],
                                 "x":x,
                                 "y":y,
@@ -113,18 +108,24 @@ class Almacen():
         return self.getPosicionEstante(id_end)
 
     def getPosicionEstante(self,id_estante):
-        id_estante+=1
-        for posicion in self.matriz_deposito:
-            if posicion["almacen_id"] == id_estante:
-                ID_end = posicion["id"]
-                break
+        if id_estante+1<len(self.estanterias):
+            posicionFinal = self.estanterias[id_estante+1]["pos"]
+            return posicionFinal
         else:
             print("el estante",id_estante,"esta fuera de rango")
+            return False
+        
+    def getPosicionProducto(self,producto):
+        for estanteria in self.estanterias:
+            if estanteria["producto"]==producto:
+                posicion = self.estanterias["pos"]
+                return posicion
+        else:
+            print(f"No se encontro el producto {producto}")
+            return None
 
-        posicionFinal = self.matriz_deposito[ID_end-1]["pos"]
-        #remueve el punto final de las restricciones porque si se puede llegar a el
-        restricciones = list(filter(lambda x: x != posicionFinal,self.estanterias))
-        #self.estanterias.copy().remove(self.matriz_deposito[ID_end-1]["pos"])
-        return posicionFinal,restricciones
+    def cargarProductos(self,layout):
+        for prod in layout:
+            self.estanterias["producto"]=prod
 
-Almacen(True)
+Almacen(plot = True)
