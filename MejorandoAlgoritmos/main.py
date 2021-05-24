@@ -24,9 +24,9 @@ almacen = Almacen(plot=True)
 #estanterias_Y_size = 4
 
 graficos = mapa(almacen)
-graficos.mostrarMapa()
-#graficos.start()
-graficos.resetMapa()
+#graficos.mostrarMapa()
+graficos.start()
+#graficos.resetMapa()
 time.sleep(1)
 input("Wait...")
 
@@ -46,7 +46,7 @@ print(f"Distancia Total camino original: {distTotal}")
 elapsed_time = time.time() - start_time # tiempo al terminar de unir todos los puntos 
 print("Elapsed time: %.10f seconds." % elapsed_time)
 
-#graficos.printCaminos(solucion,marcarPuntos=1,animar=0.2,hilo=False)
+graficos.printCaminos(solucion,marcarPuntos=1,animar=0.2,hilo=False)
 
 xxx = input("Salir [s/n]:")
 if xxx == "s":
