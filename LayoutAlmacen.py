@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Este es mi brach de trabajo
 from random import randint
 
@@ -122,7 +121,7 @@ class Almacen():
     def getPosicionProducto(self,producto):
         for estanteria in self.estanterias:
             if estanteria["producto"]==producto:
-                posicion = self.estanterias["pos"]
+                posicion = estanteria["pos"]
                 return posicion
         else:
             print(f"No se encontro el producto {producto}")
@@ -200,10 +199,10 @@ class mapa():
         self.font_color = pygame.Color("white")
 
     def start(self):
-        _thread.start_new_thread( self.mostrarMapa2,() )
+        _thread.start_new_thread( self.mostrarMapa,() )
 
     # Muestra el mapa completo y lo va actualizando =======================================================
-    def mostrarMapa2(self):
+    def mostrarMapa(self):
         while not self.gameOver:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -234,7 +233,7 @@ class mapa():
                     pygame.draw.rect(self.screen, mapa.Color[color], [X, Y, self.sizeSquare-2, self.sizeSquare-2], 0)
 
             pygame.display.flip()
-            self.clock.tick(5)
+            #self.clock.tick(5)
         pygame.quit()
     
     def resetMapa(self):
@@ -359,22 +358,26 @@ class mapa():
         time.sleep(2)
         pygame.quit()
 
-alm = Almacen(plot = True)
-graficos = mapa(alm)
-graficos.mostrarMapa2()
-input("Continuar?")
-#graficos.start()
-graficos.resetMapa()
-input("Salir?")
-# graphics = mapa()
-# graphics.start()
-# graphics.mostrarCamino(2,5)
 
-# for j in range(Almacen.limits_y[1]):
-#     for i in range(Almacen.limits_x[1]):
-#         ant = graphics.mostrarCamino(i,j)
-#         time.sleep(0.01)
-#         ant = graphics.borrarCamino(i,j,ant)
-# ant = graphics.mostrarCamino(i,j,3)
-# input("Presiona enter para salir...")
-graficos.close()
+
+# prueba = False
+# if prueba:
+#     alm = Almacen(plot = True)
+#     graficos = mapa(alm)
+#     graficos.mostrarMapa2()
+#     input("Continuar?")
+#     #graficos.start()
+#     graficos.resetMapa()
+#     input("Salir?")
+#     # graphics = mapa()
+#     # graphics.start()
+#     # graphics.mostrarCamino(2,5)
+
+#     # for j in range(Almacen.limits_y[1]):
+#     #     for i in range(Almacen.limits_x[1]):
+#     #         ant = graphics.mostrarCamino(i,j)
+#     #         time.sleep(0.01)
+#     #         ant = graphics.borrarCamino(i,j,ant)
+#     # ant = graphics.mostrarCamino(i,j,3)
+#     # input("Presiona enter para salir...")
+#     graficos.close()

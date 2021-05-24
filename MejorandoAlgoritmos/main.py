@@ -15,7 +15,7 @@ from TempleSimulado import TempleSimulado
 import time
 
 print("INICIO")
-almacen = Almacen(plot=False)
+almacen = Almacen(plot=True)
 
 #limits = [[0,36],[0,36]]
 #estanterias_X_pos = [1,2]
@@ -24,8 +24,11 @@ almacen = Almacen(plot=False)
 #estanterias_Y_size = 4
 
 graficos = mapa(almacen)
-graficos.start()
+graficos.mostrarMapa()
+#graficos.start()
+graficos.resetMapa()
 time.sleep(1)
+input("Wait...")
 
 # Cargo las ordenes de pedidos ==================================================================
 empiezoEn = [0,0]
@@ -38,11 +41,12 @@ start_time = time.time() # tiempo al iniciar el algoritmo A*
 ordenesPosiciones = list(map(lambda x:almacen.getPosicionProducto(x),orden1))
 solucion,distTotal = resolverCamino(almacen,empiezoEn,ordenesPosiciones,final=None)
 print(solucion)
-graficos.printCaminos(solucion,marcarPuntos=1,animar=0.2,hilo=False)
 print(f"Distancia Total camino original: {distTotal}")
 
 elapsed_time = time.time() - start_time # tiempo al terminar de unir todos los puntos 
 print("Elapsed time: %.10f seconds." % elapsed_time)
+
+#graficos.printCaminos(solucion,marcarPuntos=1,animar=0.2,hilo=False)
 
 xxx = input("Salir [s/n]:")
 if xxx == "s":

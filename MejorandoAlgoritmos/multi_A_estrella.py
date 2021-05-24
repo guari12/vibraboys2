@@ -1,6 +1,4 @@
 from A_estrella import A_estrella
-from almacen import Almacen
-from graficar import mapa
 
 def resolverCamino(almacen,inicio,posiciones_estanterias,final=None):
 
