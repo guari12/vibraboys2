@@ -122,7 +122,7 @@ class Almacen():
     def getPosicionProducto(self,producto):
         for estanteria in self.estanterias:
             if estanteria["producto"]==producto:
-                posicion = self.estanterias["pos"]
+                posicion = estanteria["pos"]
                 return posicion
         else:
             print(f"No se encontro el producto {producto}")
@@ -359,22 +359,26 @@ class mapa():
         time.sleep(2)
         pygame.quit()
 
-alm = Almacen(plot = True)
-graficos = mapa(alm)
-graficos.mostrarMapa2()
-input("Continuar?")
-#graficos.start()
-graficos.resetMapa()
-input("Salir?")
-# graphics = mapa()
-# graphics.start()
-# graphics.mostrarCamino(2,5)
 
-# for j in range(Almacen.limits_y[1]):
-#     for i in range(Almacen.limits_x[1]):
-#         ant = graphics.mostrarCamino(i,j)
-#         time.sleep(0.01)
-#         ant = graphics.borrarCamino(i,j,ant)
-# ant = graphics.mostrarCamino(i,j,3)
-# input("Presiona enter para salir...")
-graficos.close()
+
+prueba = False
+if prueba:
+    alm = Almacen(plot = True)
+    graficos = mapa(alm)
+    graficos.mostrarMapa2()
+    input("Continuar?")
+    #graficos.start()
+    graficos.resetMapa()
+    input("Salir?")
+    # graphics = mapa()
+    # graphics.start()
+    # graphics.mostrarCamino(2,5)
+
+    # for j in range(Almacen.limits_y[1]):
+    #     for i in range(Almacen.limits_x[1]):
+    #         ant = graphics.mostrarCamino(i,j)
+    #         time.sleep(0.01)
+    #         ant = graphics.borrarCamino(i,j,ant)
+    # ant = graphics.mostrarCamino(i,j,3)
+    # input("Presiona enter para salir...")
+    graficos.close()

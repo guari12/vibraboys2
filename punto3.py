@@ -38,7 +38,6 @@ order_aux=random.sample(range(100),len_ordenes)
 
 
 for i in range(cant_ordenes):
-    
     list_order.append(order_aux)
 
 
