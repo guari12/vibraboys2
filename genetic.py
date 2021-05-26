@@ -1,32 +1,33 @@
 import random
+from numpy.lib.shape_base import kron
 from simulated_anneling import anneling,layout, ley_enfriamiento
 
 
 
 class genetic():
 
-    def __init__(self,_cant_poblacion,_list_ordenes,_obstaculos,_layout,_T):
+    def __init__(self,_cant_poblacion,_list_ordenes,_obstaculos,_layout,_T,_cant_prod=108):
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
+        self.cant_pro=_cant_prod
         self.poblacion=[]                     #Poblacion inicial 
-        self.colm=12
-        self.row=9
         #Creacion de la poblacion incial 
         self.set_poblacion()
+        self.cant_iter=10
         self.list_ordenes=_list_ordenes
+        self.k=round(self.cant_poblacion*0.5)
         self.obstaculos=_obstaculos
         self.layout=_layout
-        self.n=len(self.poblacion)
         self.T=_T   #Agenda de enfriamiento
 
     def genoma(self):
 
-        individuo=[]
-        aux=random.sample(range(1,109),108)
-        for i in range(self.row):
+        #individuo=[]
+        aux=random.sample(range(1,self.cant_pro+1),self.cant_pro)
+        # for i in range(self.row):
 
-            individuo.append(aux[i*self.colm:(i+1)*self.colm])
+        #      individuo.append(aux[i*self.colm:(i+1)*self.colm])
 
-        return individuo
+        return aux
     
     def set_poblacion(self):
         for i in range(self.cant_poblacion):
@@ -41,81 +42,136 @@ class genetic():
             list_order2=[]
             for q2 in order:
 
-                it=0
+                #it=0
 
-                for q in individuo :
+                #for q in individuo :
 
 
-                    if q2 in q:
+                if q2 in individuo:
 
-                        a=q.index(q2)
-                        aux=self.obstaculos[it*(len(q)-1)+a]
-                        list_order2.append(aux)
+                    a=individuo.index(q2)
+                    #aux=self.obstaculos[it*(len(q)-1)+a]
+                    aux=self.obstaculos[a]
+                    list_order2.append(aux)
 
-                    it +=1
+                    #it +=1
 
             temple=anneling(list_order2,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
             [way,resultado,E]=temple.search()
-            fit+=fit+E[-1]
+            fit+=E[-1]
             
-        return  fit/len(self.list_order)
+        return  fit/len(self.list_ordenes)
 
     def cross_over(self,cant_cross=1):
         
-        pares=[[random.sample(self.poblacion_best,2)] for i in range(round(self.n)/2)]
+        pares=[random.sample(self.poblacion_best,2) for i in range(round(self.cant_poblacion/2))]
         self.poblacion=[]
 
-        for i in range(round(self.n)/2):
+        for i in range(round(self.cant_poblacion/2)):
             
-            index_colm=[[0,0]]
-            index_row=[[0,0]]
-            index_colm.append([random.sample(self.colm,cant_cross)])
-            index_row.append([random.sample(self.row,cant_cross)])
-            individuo_aux1=pares[i][1]
-            individuo_aux2=pares[i][2]
-            aux1=[]
-            aux2=[]
+            individuo_aux1=pares[i][0]
+            individuo_aux2=pares[i][1]
 
-            for j in range(cant_cross):
+            index=random.sample(range(len(individuo_aux1)),2*cant_cross)
+            index.sort()
 
-                if j%2==0:
+            aux1=individuo_aux2[index[0]:index[1]]
+            aux2=individuo_aux1[index[0]:index[1]]
 
-                    aux1.append(individuo_aux2[index_row[j]:index_row[j+1]][index_colm[j]:index_colm[j+1]])
-                    aux2.append(individuo_aux1[index_row[j]:index_row[j+1]][index_colm[j]:index_colm[j+1]])
+            for j in [aux1.copy(),aux2.copy()]:
+                
+                aa=0
+                if j==aux1:
+                    aux3=[]
+                    aux3=individuo_aux1[index[1]:]
+                    aux3.extend(individuo_aux1[0:index[0]])
+                    individuo=individuo_aux1
+                    aux4=aux2
 
-                else:
+                if j==aux2:
+                    aux3=[]
+                    aux3=individuo_aux2[index[1]:]
+                    aux3.extend(individuo_aux2[0:index[1]])
+                    individuo=individuo_aux2
+                    aux4=aux1
 
-                    aux1.append(individuo_aux1[index_row[j]:index_row[j+1]][index_colm[j]:index_colm[j+1]])
-                    aux2.append(individuo_aux2[index_row[j]:index_row[j+1]][index_colm[j]:index_colm[j+1]])  
+                for i in aux3:
+                    
+                    if i in j:
 
-            self.poblacion.append(aux1,aux2)    
+                        pass
+
+                    elif (len(j)+index[0])>=len(individuo):
+
+                        j.insert(aa,i)
+                        aa+=1
+                        
+                    else:
+
+                        j.append(i)
+
+                    if aux3.index(i)==len(aux3)-1:
+
+                        if len(j)==len(individuo):
+                            pass
+
+                        if len(j)<len(individuo):
+                            for i in range((len(individuo)-len(j))):
+                                index2=0
+                                aux5=aux4[index2]
+                                while aux5 in j:
+                                    index2+=1
+                                    aux5=aux4[index2]
+
+                                if (len(j)+index[0])>=len(individuo):
+
+                                    j.insert(aa,aux5)
+                                    aa+=1
+                                    
+                                else:
+
+                                    j.append(aux5)
+
+                self.poblacion.append(j) 
+
+        if len(self.poblacion)<self.cant_poblacion:
+
+            self.poblacion.append(self.poblacion_best[0])
+
+    def get_best(self):
+
+        list_fit=[]                 #Lista de fitness
+        self.poblacion_best=[]      #Lista con los mejores
+
+        it=0
+        dictor={}
+
+        for invididuo in self.poblacion:
+
+            list_fit.append(self.fitness(invididuo))
+            dictor[list_fit[-1]]=it
+            it+=1        
+
+        list_fit.sort()
+            
+        for i in range(self.k):
+
+            index=dictor[list_fit[i]]
+            self.poblacion_best.append(self.poblacion[index])
+             
 
 
     def process(self):
         
         #Se selecciona los k mejores individuos
         it=0
-        while it<1000:
+        while it<self.cant_iter:
 
-            k=round(self.n*0.4)
-            list_fit=[]
-            self.poblacion_best=[]
-
-            for invididuos in self.poblacion:
-
-                list_fit.append(self.fitness(invididuos))
-
-            dictor=dict.fromkeys(list_fit,range(self.cant_poblacion))      
-
-            list_fit.sort()
-            
-            for i in list_fit:
-                self.poblacion_best.append(dictor[i])
-
+            self.get_best()
             self.cross_over()
-
+            print(it,'\n')
             it+=1
 
-        return self.poblacion_best[-1]
+        return self.poblacion_best[0]
         
         

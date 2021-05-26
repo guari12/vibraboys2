@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import time
 from simulated_anneling import anneling,layout, ley_enfriamiento
 
-cant_ordenes=100    #Cantidad de ordenes que se desean leer
+cant_ordenes=10    #Cantidad de ordenes que se desean leer
 
 #Lee las ordenes de un archivo
 with open('orders.txt') as archivo:
@@ -32,8 +32,14 @@ with open('orders.txt') as archivo:
 len_enfria=200  #Longitud de la ley de enfriamiento
 coef_exp=1.5    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
-cant_ordenes=1  #Cantidad de ordenes
-len_ordenes=5  #Longitud de ordenes
+# cant_ordenes=2  #Cantidad de ordenes
+# len_ordenes=5  #Longitud de ordenes
+
+# list_order=[]
+
+# for i in range(cant_ordenes):
+#     order_aux=random.sample(range(10),len_ordenes)
+#     list_order.append(order_aux)
 
 lista_A=[]      #Lista que contiene el mapeo del layout
 osbtaculos=[]   #Lista que contiene las direccion de las estanterias dentro de lista_A, que van a ser consideradas como obstaculos por nuestro algoritmo A*
