@@ -1,10 +1,13 @@
-import numpy as np
-import random
-from A_estrella import A_star,nodos,nodo_inicial
 #Dado un punto en el espacio articular de un robot serie de 6 grados de libertad, 
 # encontrar el camino más corto para llegar hasta otro punto utilizando el algoritmo A*. 
 # Genere aleatoriamente los puntos de inicio y fin, 
 # y genere también aleatoriamente obstáculos que el robot debe esquivar, siempre en el espacio articular. 
+
+
+import numpy as np
+import random
+from A_estrella import A_star,nodos,nodo_inicial
+
 
 
 n=12    # El paso es de 60°. Para esta discretizacion la complejidad puede ser de b^n = 1.5e17 (b=729 y n=6)

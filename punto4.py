@@ -9,7 +9,6 @@ from leerOrdenes import getOrdenes
 
 import random
 import numpy as np
-from colorama import Fore,Style
 
 import matplotlib.pyplot as plt
 import time
@@ -18,7 +17,6 @@ import os
 cant_ordenes=10    #Cantidad de ordenes que se desean leer
 
 #Lee las ordenes de un archivo
-
 path, _ = os.path.split(os.path.abspath(__file__))
 list_order=getOrdenes("orders.txt")
 
