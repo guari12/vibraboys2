@@ -1,5 +1,5 @@
 def getOrdenes(path):
-    f = open("path")
+    f = open(path)
     ordenes = []
     orden = []
     orden = 1

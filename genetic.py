@@ -6,7 +6,7 @@ from simulated_anneling import anneling, ley_enfriamiento
 
 class genetic():
 
-    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_obstaculos,_T,_cant_prod=108):
+    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_T,_cant_prod=108):
 
         self.almacen = almacen
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
@@ -17,8 +17,6 @@ class genetic():
         self.cant_iter=10
         self.list_ordenes=_list_ordenes
         self.k=round(self.cant_poblacion*0.5)
-
-        self.obstaculos=_obstaculos
         
         self.T=_T   #Agenda de enfriamiento
         self.obstaculos=self.almacen.obstaculos

@@ -20,7 +20,7 @@ cant_ordenes=10    #Cantidad de ordenes que se desean leer
 #Lee las ordenes de un archivo
 
 path, _ = os.path.split(os.path.abspath(__file__))
-list_order=getOrdenes(path+"orders.txt")
+list_order=getOrdenes("orders.txt")
 
 #Parametros del modelo
 len_enfria=200  #Longitud de la ley de enfriamiento
