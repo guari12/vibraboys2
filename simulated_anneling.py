@@ -42,6 +42,8 @@ class anneling():
         # Tengo un estado (conjunto de posiciones a unir)
         print("TEMPLE>> Calculando energia del estado:",state)
 
+        # Si camino total = False, solo calculo la distancia
+        # Sino devuelvo toda la solucion
         list_way=[]
         way=0
 
@@ -61,8 +63,7 @@ class anneling():
             
             else:
                 way+=A_object.buscar_camino()
-
-        print("TEMPLE>> Se devuelve:",list_way)
+        # Que es list_way y way?
 
         if camino_total==True:
             print("TEMPLE>> Se devuelve el total:",list_way)
