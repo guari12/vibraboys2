@@ -4,29 +4,16 @@
 
 from genetic import genetic
 import random
-import colorama
 import numpy as np
-from colorama import Fore,Style
-import matplotlib.pyplot as plt
-import time
 from simulated_anneling import anneling,layout, ley_enfriamiento
+from LayoutAlmacen import Almacen
+from leerOrdenes import getOrdenes
+
 
 cant_ordenes=10    #Cantidad de ordenes que se desean leer
 
 #Lee las ordenes de un archivo
-with open('orders.txt') as archivo:
-    ordertxt=archivo.read()
-    list_order=[]
-    for i in range(1,cant_ordenes):
-
-        index1=ordertxt.find('Order'+' '+f'{i}')
-        index2=ordertxt.find('Order'+' '+f'{i+1}')
-        aux=ordertxt[(index1+len('Order'+' '+f'{i}')):index2]
-        list_aux2=aux.split('\nP')
-        list_aux2.pop(0)
-        list_aux2[-1]=list_aux2[-1].replace('\n\n','')
-        list_aux2=list(map(int,list_aux2))
-        list_order.append(list_aux2)
+list_order=getOrdenes("orders.txt")
 
 #Parametros del modelo
 len_enfria=200  #Longitud de la ley de enfriamiento
@@ -41,17 +28,16 @@ tem_max=5000    #Temperatur maxima
 #     order_aux=random.sample(range(10),len_ordenes)
 #     list_order.append(order_aux)
 
-lista_A=[]      #Lista que contiene el mapeo del layout
-osbtaculos=[]   #Lista que contiene las direccion de las estanterias dentro de lista_A, que van a ser consideradas como obstaculos por nuestro algoritmo A*
 
-# Se crea el layout asignando un numero a cada estanteria y con '*' a los pasillos
-[lista_A,osbtaculos]=layout()
+# Se crea el layout
+almacen=Almacen()
 
 T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 #Creacion de la poblacion incial
 
+
 cant_poblacion = 10 #Numeros de individuos de una poblacion
-alg_genetic=genetic(cant_poblacion,list_order,osbtaculos,lista_A,T)
+alg_genetic=genetic(almacen,cant_poblacion,list_order,T)
 print(alg_genetic.process())
 
 
