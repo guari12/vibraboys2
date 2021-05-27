@@ -4,19 +4,21 @@
 
 from LayoutAlmacen import Almacen
 from simulated_anneling import anneling, ley_enfriamiento
-
 from genetic import genetic
+
 import random
 import colorama
 import numpy as np
 from colorama import Fore,Style
 import matplotlib.pyplot as plt
 import time
+import os
 
 cant_ordenes=10    #Cantidad de ordenes que se desean leer
 
 #Lee las ordenes de un archivo
-with open('orders.txt') as archivo:
+path, _ = os.path.split(os.path.abspath(__file__))
+with open(path+'/orders.txt') as archivo:
     ordertxt=archivo.read()
     list_order=[]
     for i in range(1,cant_ordenes):
