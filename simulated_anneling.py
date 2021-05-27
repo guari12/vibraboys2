@@ -77,14 +77,14 @@ class anneling():
 
         return math.exp(delta_energy/Temp)
 
-    def search(self):
+    def search(self,caminoTotal=False):
         it=0
         for i in range(self.t):
             it+=1
             #print("Variacion Temperatura",self.T[i])
             if abs(self.T[i])==0 or it==0 :
                 return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
-
+                        # camino recorrido total (todos los puntos entre estanterias), [ [x,y] , [x1,y1]  ] , [evolucion de la energia]
             self.next_stateaux=self.next_state()
             E2=self.energy(self.next_stateaux.copy())
             deltaenergy=self.E1-E2
