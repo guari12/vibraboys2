@@ -6,7 +6,11 @@ from simulated_anneling import anneling, ley_enfriamiento
 
 class genetic():
 
+<<<<<<< HEAD
     def __init__(self,almacen,_cant_poblacion,_list_ordenes,_obstaculos,_T,_cant_prod=108):
+=======
+    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_T,_cant_prod=108):
+>>>>>>> mejoras-genetic
         self.almacen = almacen
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
         self.cant_pro=_cant_prod
@@ -16,19 +20,15 @@ class genetic():
         self.cant_iter=10
         self.list_ordenes=_list_ordenes
         self.k=round(self.cant_poblacion*0.5)
+<<<<<<< HEAD
         self.obstaculos=_obstaculos
         
+=======
+>>>>>>> mejoras-genetic
         self.T=_T   #Agenda de enfriamiento
 
     def genoma(self):
-
-        #individuo=[]
-        aux=random.sample(range(1,self.cant_pro+1),self.cant_pro)
-        # for i in range(self.row):
-
-        #      individuo.append(aux[i*self.colm:(i+1)*self.colm])
-
-        return aux
+        return random.sample(range(1,self.cant_pro+1),self.cant_pro)
     
     def set_poblacion(self):
         for i in range(self.cant_poblacion):
@@ -36,19 +36,20 @@ class genetic():
 
     #La funcion de fitness hace uso del temple simulado para obtener una medida de idoneidad
     def fitness(self,individuo):
-        #Se busca las coordenadas de estos puntos en el layout
-        #self.almacen.cargarProductos(individuo)
-        #individuo = [10,20,13,......,90]
-        #              1   2  3         n
-        #ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),orden1))
-        #   [  5,      10          13 ]
-        #  [ [1,1], [10,6] ..... [13,5]   ]
+
         fit=0
         self.almacen.cargarProductos(individuo)
         for order in self.list_ordenes :
+<<<<<<< HEAD
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
             temple=anneling(ordenesPosiciones,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
+=======
+
+            ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
+
+            temple=anneling(ordenesPosiciones ,self.T,self.almacen.obstaculos,2,[0,0],[0,0],fin=True)
+>>>>>>> mejoras-genetic
             [way,resultado,E]=temple.search()
             fit+=E[-1]
             
