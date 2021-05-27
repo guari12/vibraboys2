@@ -31,11 +31,10 @@ class genetic():
         fit=0
         self.almacen.cargarProductos(individuo)
         for order in self.list_ordenes :
-            list_order2=[]
 
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
-            temple=anneling(list_order2,self.T,self.almacen.obstaculos,2,[0,0],[0,0],fin=True)
+            temple=anneling(ordenesPosiciones ,self.T,self.almacen.obstaculos,2,[0,0],[0,0],fin=True)
             [way,resultado,E]=temple.search()
             fit+=E[-1]
             
