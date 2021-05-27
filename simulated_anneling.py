@@ -63,6 +63,7 @@ class anneling():
                 way+=A_object.buscar_camino()
 
         if camino_total==True:
+
             return list_way
         else:
             return way

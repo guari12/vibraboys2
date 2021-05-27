@@ -1,12 +1,12 @@
 import random
 from numpy.lib.shape_base import kron
-from simulated_anneling import anneling,layout, ley_enfriamiento
-from LayoutAlmacen import Almacen
+from simulated_anneling import anneling, ley_enfriamiento
+#from LayoutAlmacen import Almacen
 
 
 class genetic():
 
-    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_obstaculos,_layout,_T,_cant_prod=108):
+    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_obstaculos,_T,_cant_prod=108):
         self.almacen = almacen
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
         self.cant_pro=_cant_prod
@@ -17,7 +17,7 @@ class genetic():
         self.list_ordenes=_list_ordenes
         self.k=round(self.cant_poblacion*0.5)
         self.obstaculos=_obstaculos
-        self.layout=_layout
+        
         self.T=_T   #Agenda de enfriamiento
 
     def genoma(self):
