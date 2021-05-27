@@ -1,5 +1,5 @@
-def getOrdenes():
-    f = open("/Volumes/HDD 500/FACULTAD/IA2/TP1/orders.txt")
+def getOrdenes(path):
+    f = open("path")
     ordenes = []
     orden = []
     orden = 1

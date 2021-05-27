@@ -21,6 +21,7 @@ class genetic():
         self.obstaculos=_obstaculos
         
         self.T=_T   #Agenda de enfriamiento
+        self.obstaculos=self.almacen.obstaculos
 
     def genoma(self):
         return random.sample(range(1,self.cant_pro+1),self.cant_pro)
@@ -38,7 +39,7 @@ class genetic():
 
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
-            temple=anneling(ordenesPosiciones ,self.T,self.almacen.obstaculos,2,[0,0],[0,0],fin=True)
+            temple=anneling(ordenesPosiciones ,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
             [way,resultado,E]=temple.search()
             fit+=E[-1]
             
