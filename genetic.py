@@ -1,7 +1,7 @@
 import random
 from numpy.lib.shape_base import kron
 from simulated_anneling import anneling,layout, ley_enfriamiento
-from LayoutAlmacen import Almacen
+
 
 
 class genetic():
