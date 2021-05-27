@@ -14,24 +14,26 @@ aa=1
 
 # Se crea el layout asignando un numero a cada estanteria y con '*' a los pasillos
 for i in range(16):
+    
+    for i in range(13):
 
-    lista_aux=[]
+        lista_aux=[]
 
-    if i%5==0:
-        lista_aux.extend( ["*" for j in range(16)])
-    else:
+        if i%4==0:
+            lista_aux.extend( ["*" for j in range(19)])
+        else:
 
-        for j in range(16):
-            if aa%3==1:
-                lista_aux.append("*")
-            
-            else:
-                it +=1
-                lista_aux.append(it)
-                osbtaculos.append([i,j])
-            aa +=1
-    lista_A.append(lista_aux)
-    aa=1
+            for j in range(19):
+                if aa%3==1:
+                    lista_aux.append("*")
+                
+                else:
+                    it +=1
+                    lista_aux.append(it)
+                    osbtaculos.append([i,j])
+                aa +=1
+        lista_A.append(lista_aux)
+        aa=1
 
 #Se elige una estanteria inicial y final al azar
 punto_inicial=random.randrange(0,120,1)

@@ -5,8 +5,9 @@ from prettytable import PrettyTable
 import matplotlib.pyplot as plt
 
 from A_estrella import A_estrella
-from almacen import Almacen
-from graficar import mapa
+# from almacen import Almacen
+# from graficar import mapa
+from LayoutAlmacen import *
 from leerOrdenes import getOrdenes
 from multi_A_estrella import resolverCamino
 from TempleSimulado import TempleSimulado
@@ -14,7 +15,7 @@ from TempleSimulado import TempleSimulado
 import time
 
 print("INICIO")
-almacen = Almacen()
+almacen = Almacen(plot=True)
 
 #limits = [[0,36],[0,36]]
 #estanterias_X_pos = [1,2]
@@ -22,26 +23,38 @@ almacen = Almacen()
 #estanterias_Y_pos = [1,2,3,4]
 #estanterias_Y_size = 4
 
-graficos = mapa(Almacen.limits,Almacen.Dist_Estantes)
+graficos = mapa(almacen)
+#graficos.mostrarMapa()
 graficos.start()
+#graficos.resetMapa()
 time.sleep(1)
+input("Wait...")
 
 # Cargo las ordenes de pedidos ==================================================================
-empiezoEn = almacen.getPosicion(581)
+empiezoEn = [0,0]
 ordenes = getOrdenes()
 orden1 = ordenes[0] # lista de id de almacenes
 
 # Orden original =============================================================================
 start_time = time.time() # tiempo al iniciar el algoritmo A*
 
-solucion,distTotal = resolverCamino(almacen,empiezoEn,orden1,final=None)
+ordenesPosiciones = list(map(lambda x:almacen.getPosicionProducto(x),orden1))
+solucion,distTotal = resolverCamino(almacen,empiezoEn,ordenesPosiciones,final=None)
 print(solucion)
-#graficos.printCaminos(solucion,marcarPuntos=2,animar=0.5,hilo=False)
 print(f"Distancia Total camino original: {distTotal}")
 
 elapsed_time = time.time() - start_time # tiempo al terminar de unir todos los puntos 
 print("Elapsed time: %.10f seconds." % elapsed_time)
 
+graficos.printCaminos(solucion,marcarPuntos=1,animar=0.2,hilo=False)
+
+xxx = input("Salir [s/n]:")
+if xxx == "s":
+    graficos.close()
+    print("FIN")
+    exit()
+else:
+    pass
 # Mejorar con temple =============================================================================
 start_time = time.time() # tiempo al iniciar el temple
 

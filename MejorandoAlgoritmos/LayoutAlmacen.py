@@ -128,10 +128,8 @@ class Almacen():
             return None
 
     def cargarProductos(self,layout):
-        i=0
         for prod in layout:
-            self.estanterias[i]["producto"]=prod
-            i+=1
+            self.estanterias["producto"]=prod
 
 # #######################################################################################################
 # Almacen(plot = True)
@@ -359,3 +357,27 @@ class mapa():
         self.gameOver = True
         time.sleep(2)
         pygame.quit()
+
+
+
+# prueba = False
+# if prueba:
+#     alm = Almacen(plot = True)
+#     graficos = mapa(alm)
+#     graficos.mostrarMapa2()
+#     input("Continuar?")
+#     #graficos.start()
+#     graficos.resetMapa()
+#     input("Salir?")
+#     # graphics = mapa()
+#     # graphics.start()
+#     # graphics.mostrarCamino(2,5)
+
+#     # for j in range(Almacen.limits_y[1]):
+#     #     for i in range(Almacen.limits_x[1]):
+#     #         ant = graphics.mostrarCamino(i,j)
+#     #         time.sleep(0.01)
+#     #         ant = graphics.borrarCamino(i,j,ant)
+#     # ant = graphics.mostrarCamino(i,j,3)
+#     # input("Presiona enter para salir...")
+#     graficos.close()
