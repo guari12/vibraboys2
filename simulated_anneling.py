@@ -62,10 +62,13 @@ class anneling():
             else:
                 way+=A_object.buscar_camino()
 
-        if camino_total==True:
+        print("TEMPLE>> Se devuelve:",list_way)
 
+        if camino_total==True:
+            print("TEMPLE>> Se devuelve el total:",list_way)
             return list_way
         else:
+            print("TEMPLE>> Se devuelve el NO total:",way)
             return way
 
 
