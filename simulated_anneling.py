@@ -41,6 +41,7 @@ class anneling():
         
         # Tengo un estado (conjunto de posiciones a unir)
         print("TEMPLE>> Calculando energia del estado:",state)
+        # 
 
         # Si camino total = False, solo calculo la distancia
         # Sino devuelvo toda la solucion
@@ -77,14 +78,18 @@ class anneling():
 
         return math.exp(delta_energy/Temp)
 
-    def search(self):
+    def search(self,caminoTotal=False):
         it=0
         for i in range(self.t):
             it+=1
             #print("Variacion Temperatura",self.T[i])
             if abs(self.T[i])==0 or it==0 :
-                return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
-
+                if caminoTotal:
+                    return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
+                    # camino recorrido total (todos los puntos entre estanterias), [ [x,y] , [x1,y1]  ] , [evolucion de la energia]
+                else:
+                    return self.list_energy[-1]
+                        
             self.next_stateaux=self.next_state()
             E2=self.energy(self.next_stateaux.copy())
             deltaenergy=self.E1-E2
@@ -104,36 +109,6 @@ class anneling():
 
             self.list_energy.append(self.E1)
 
-""" # Esto ya no se usa
-def layout():
-
-    lista_A=[]
-    osbtaculos=[]
-    it=0
-    aa=1
-    
-    for i in range(13):
-
-        lista_aux=[]
-
-        if i%4==0:
-            lista_aux.extend( ["*" for j in range(19)])
-        else:
-
-            for j in range(19):
-                if aa%3==1:
-                    lista_aux.append("*")
-                
-                else:
-                    it +=1
-                    lista_aux.append(it)
-                    osbtaculos.append([i,j])
-                aa +=1
-        lista_A.append(lista_aux)
-        aa=1
-
-    return lista_A,osbtaculos
-"""
 
 def ley_enfriamiento(tem_max,len_enfria,coef_exp,recalentamiento=False,tem_rec=0,cant_rec=0):
 
