@@ -33,5 +33,5 @@ T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 
 
 cant_poblacion = 10 #Numeros de individuos de una poblacion
-alg_genetic=genetic(almacen,cant_poblacion,list_order,almacen.obstaculos,T)
+alg_genetic=genetic(almacen,cant_poblacion,list_order,T)
 print(alg_genetic.process())
