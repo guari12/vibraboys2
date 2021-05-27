@@ -1,12 +1,10 @@
 from random import randint
 import math
-from A_estrella_Trubi import Node,A_estrella
-from arbol import reduccion,ampliar,amplificar,reducir
-from prettytable import PrettyTable
+from arbol import reduccion,ampliar,amplificar,reducir,A_estrella
 
 #Resolver robot 6gdl con algoritmo A*
 gdl = 6
-q_lim = [[-140,141],[-150,151],[0,181],[-400,401],[-180,181],[-360,361]] #lim min y max
+q_lim = [[-140,140],[-150,150],[0,180],[-400,400],[-180,180],[-360,360]] #lim min y max
 
 #gdl = 4
 #q_lim = [[-14,14],[-15,15],[-13,13],[-18,18]] #lim min y max
@@ -19,8 +17,8 @@ for i in range(gdl):
     qi.append(randint(q_lim[i][0],q_lim[i][1]))
     qf.append(randint(q_lim[i][0],q_lim[i][1]))
 
-qi = [-139,149,1,390,-170,359]
-qf = [139,-149,179,-390,170,-359]
+qi = [-140,150,0,400,-180,360]
+qf = [140,-150,180,-400,180,-360]
 
 #Proponer obstaculos y restricciones aleatorias en el camino
 cant_obstaculos = 0
@@ -32,7 +30,7 @@ tol_obstaculo = 1 #no me puedo acercar a 1 grados de los obstaculos
 # print(f"Final: {qf}")
 camino = []
 
-escal = 50
+escal = 100
 
 qir = reducir(escal,qi,"int")
 qfr = reducir(escal,qf,"int")
@@ -50,7 +48,7 @@ camino.extend(solucion)
 
 print(camino[-1])
 
-escal = 10
+escal = 20
 qir = reducir(escal,camino[-1],"int")
 qfr = reducir(escal,qf,"int")
 
