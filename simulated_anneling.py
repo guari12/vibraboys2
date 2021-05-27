@@ -41,6 +41,7 @@ class anneling():
         
         # Tengo un estado (conjunto de posiciones a unir)
         print("TEMPLE>> Calculando energia del estado:",state)
+        # 
 
         # Si camino total = False, solo calculo la distancia
         # Sino devuelvo toda la solucion
