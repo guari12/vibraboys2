@@ -223,7 +223,7 @@ class A_estrella():
     def esObstaculo(self,q):
         esObstaculo = False
         for obs in self.qRest:
-            if self.sonIguales(q,obs) and not(self.nodoFinal.q):
+            if self.sonIguales(q,obs) and not self.sonIguales(q,self.nodoFinal.q):
                 return True
             else:
                 pass #esObstaculo = False
