@@ -39,6 +39,9 @@ class anneling():
     #Devuelve la energia del conjunto de ordenes o el camino
     def energy(self,state,camino_total=False):
         
+        # Tengo un estado (conjunto de posiciones a unir)
+        print("TEMPLE>> Calculando energia del estado:",state)
+
         list_way=[]
         way=0
 
@@ -95,6 +98,7 @@ class anneling():
                     self.E1=E2
 
             self.list_energy.append(self.E1)
+
 """ # Esto ya no se usa
 def layout():
 
