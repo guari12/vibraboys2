@@ -46,8 +46,6 @@ class genetic():
         fit=0
         self.almacen.cargarProductos(individuo)
         for order in self.list_ordenes :
-            list_order2=[]
-
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
             temple=anneling(ordenesPosiciones,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
