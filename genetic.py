@@ -6,7 +6,8 @@ from simulated_anneling import anneling,layout, ley_enfriamiento
 
 class genetic():
 
-    def __init__(self,_cant_poblacion,_list_ordenes,_obstaculos,_layout,_T,_cant_prod=108):
+    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_obstaculos,_layout,_T,_cant_prod=108):
+        self.almacen = almacen
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
         self.cant_pro=_cant_prod
         self.poblacion=[]                     #Poblacion inicial 
@@ -36,7 +37,12 @@ class genetic():
     #La funcion de fitness hace uso del temple simulado para obtener una medida de idoneidad
     def fitness(self,individuo):
         #Se busca las coordenadas de estos puntos en el layout
-        
+        #self.almacen.cargarProductos(individuo)
+        #individuo = [10,20,13,......,90]
+        #              1   2  3         n
+        #ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),orden1))
+        #   [  5,      10          13 ]
+        #  [ [1,1], [10,6] ..... [13,5]   ]
         fit=0
         for order in self.list_ordenes :
             list_order2=[]

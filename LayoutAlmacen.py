@@ -128,8 +128,10 @@ class Almacen():
             return None
 
     def cargarProductos(self,layout):
+        i=0
         for prod in layout:
-            self.estanterias["producto"]=prod
+            self.estanterias[i]["producto"]=prod
+            i+=1
 
 # #######################################################################################################
 # Almacen(plot = True)
