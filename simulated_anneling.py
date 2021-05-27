@@ -3,6 +3,7 @@ import random
 import math
 from A_estrella import A_star,nodos,nodo_inicial
 
+
 class anneling(): 
 
     def __init__(self,_order,_T,_obstaculos,_spatialdimension,inicio,list_fin,fin=False):

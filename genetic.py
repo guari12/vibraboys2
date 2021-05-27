@@ -1,7 +1,7 @@
 import random
 from numpy.lib.shape_base import kron
 from simulated_anneling import anneling,layout, ley_enfriamiento
-
+from LayoutAlmacen import Almacen
 
 
 class genetic():
@@ -46,21 +46,9 @@ class genetic():
         fit=0
         for order in self.list_ordenes :
             list_order2=[]
-            for q2 in order:
 
-                #it=0
-
-                #for q in individuo :
-
-
-                if q2 in individuo:
-
-                    a=individuo.index(q2)
-                    #aux=self.obstaculos[it*(len(q)-1)+a]
-                    aux=self.obstaculos[a]
-                    list_order2.append(aux)
-
-                    #it +=1
+            self.almacen.cargarProductos(individuo)
+            ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
             temple=anneling(list_order2,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
             [way,resultado,E]=temple.search()
