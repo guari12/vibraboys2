@@ -104,36 +104,6 @@ class anneling():
 
             self.list_energy.append(self.E1)
 
-""" # Esto ya no se usa
-def layout():
-
-    lista_A=[]
-    osbtaculos=[]
-    it=0
-    aa=1
-    
-    for i in range(13):
-
-        lista_aux=[]
-
-        if i%4==0:
-            lista_aux.extend( ["*" for j in range(19)])
-        else:
-
-            for j in range(19):
-                if aa%3==1:
-                    lista_aux.append("*")
-                
-                else:
-                    it +=1
-                    lista_aux.append(it)
-                    osbtaculos.append([i,j])
-                aa +=1
-        lista_A.append(lista_aux)
-        aa=1
-
-    return lista_A,osbtaculos
-"""
 
 def ley_enfriamiento(tem_max,len_enfria,coef_exp,recalentamiento=False,tem_rec=0,cant_rec=0):
 
