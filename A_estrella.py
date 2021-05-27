@@ -87,7 +87,13 @@ class A_star():
                 ff=self.Fun_busqueda.index(min(self.Fun_busqueda))
                 nodo_aux=self.lista_abierta[ff]
 
-                if (nodo_aux.ubicacion == self.punto_final):
+                if self.nodo_explorar.numAnt==-1:
+
+                    if nodo_aux.ubicacion==self.punto_final:
+                        self.Fun_busqueda[ff]=10e38
+                        ent=False
+
+                if (nodo_aux.ubicacion == self.punto_final) and ent:
 
                     camino_nodos=[nodo_aux.ubicacion]
 
@@ -101,6 +107,7 @@ class A_star():
                     else:
                         
                         return nodo_aux.camino_recorrido
+
 
                 if (nodo_aux.ubicacion in self.obstaculos): 
 
