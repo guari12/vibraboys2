@@ -83,8 +83,12 @@ class anneling():
             it+=1
             #print("Variacion Temperatura",self.T[i])
             if abs(self.T[i])==0 or it==0 :
-                return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
-                        # camino recorrido total (todos los puntos entre estanterias), [ [x,y] , [x1,y1]  ] , [evolucion de la energia]
+                if caminoTotal:
+                    return self.energy(self.actual_state.copy(),camino_total=True),self.actual_state,self.list_energy
+                    # camino recorrido total (todos los puntos entre estanterias), [ [x,y] , [x1,y1]  ] , [evolucion de la energia]
+                else:
+                    return self.list_energy[-1]
+                        
             self.next_stateaux=self.next_state()
             E2=self.energy(self.next_stateaux.copy())
             deltaenergy=self.E1-E2

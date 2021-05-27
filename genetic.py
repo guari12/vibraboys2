@@ -38,8 +38,8 @@ class genetic():
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
             temple=anneling(ordenesPosiciones ,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
-            [way,resultado,E]=temple.search()
-            fit+=E[-1]
+            E=temple.search()
+            fit+=E
             
         return  fit/len(self.list_ordenes)
 
