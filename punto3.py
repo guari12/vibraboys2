@@ -14,11 +14,11 @@ from LayoutAlmacen import Almacen,mapa
 
 
 #Parametros del modelo
-len_enfria=500  #Longitud de la ley de enfriamiento
-coef_exp=1.5    #Coef de caida exponelcia de la temperatura
+len_enfria=800  #Longitud de la ley de enfriamiento
+coef_exp=1.03    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
-cant_ordenes=10  #Cantidad de ordenes
-len_ordenes=10  #Longitud de ordenes
+cant_ordenes=50  #Cantidad de ordenes
+len_ordenes=20  #Longitud de ordenes
 
 # Se crea el layout
 almacen = Almacen()
