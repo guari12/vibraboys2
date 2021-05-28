@@ -127,6 +127,15 @@ class Almacen():
             print(f"No se encontro el producto {producto}")
             return None
 
+    def getproducto(self,posicion):
+        for estanteria in self.estanterias:
+            if estanteria["pos"]==posicion:
+                producto = estanteria["producto"]
+                return producto
+        else:
+            print(f"No se encontro la posicion {posicion}")
+            return None
+
     def cargarProductos(self,layout):
         i=0
         for prod in layout:

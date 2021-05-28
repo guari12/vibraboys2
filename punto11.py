@@ -10,7 +10,7 @@ from A_estrella import A_star,nodos,nodo_inicial
 
 
 
-n=12    # El paso es de 60°. Para esta discretizacion la complejidad puede ser de b^n = 1.5e17 (b=729 y n=6)
+n=12    # Paso
 m=6     # Cantidad de obstaculos
 d=6     # Dimension espacial
 #R.qlim(1,1:2) = [-180,  180]*pi/180;

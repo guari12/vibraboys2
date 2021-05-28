@@ -1,40 +1,38 @@
 #Dada una orden de pedido, que incluye una lista de productos del almacén anterior que deben
 #ser despachados en su totalidad, determinar el orden óptimo para la operación de picking
 #mediante Temple Simulado. ¿Qué otros algoritmos pueden utilizarse para esta tarea
+
 import random
-import colorama
 import numpy as np
-from colorama import Fore,Style
 import matplotlib.pyplot as plt
 import time
-from simulated_anneling import anneling, layout, ley_enfriamiento
+
+from simulated_anneling import anneling, ley_enfriamiento
+from LayoutAlmacen import Almacen,mapa
 
 
-colorama.init() #Libreria que me permite camibar el color de salida del print()
 
-lista_A=[]      #Lista que contiene el mapeo del layout
-osbtaculos=[]   #Lista que contiene las direccion de las estanterias dentro de lista_A, que van a ser consideradas como obstaculos por nuestro algoritmo A*
 
 #Parametros del modelo
-len_enfria=200  #Longitud de la ley de enfriamiento
+len_enfria=500  #Longitud de la ley de enfriamiento
 coef_exp=1.5    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
-cant_ordenes=1  #Cantidad de ordenes
-len_ordenes=5  #Longitud de ordenes
+cant_ordenes=10  #Cantidad de ordenes
+len_ordenes=10  #Longitud de ordenes
 
+# Se crea el layout
+almacen = Almacen()
+empiezaEN = [0, 0] #Punto de salida
+terminaEN = [0, 0]
+
+#Array para almacenar E2 promedio
 E2=np.zeros((len_enfria))
 list_E2=[]
-
-
-
-# Se crea el layout asignando un numero a cada estanteria y con '*' a los pasillos
-[lista_A,osbtaculos]=layout()
 
 
 #Genera ordenes aleatorias
 list_order=[]
 order_aux=random.sample(range(100),len_ordenes)
-#[2, 3, 5, 7, 14, 15, 17, 40, 41, 44, 58, 65, 67, 75, 78, 84, 88, 110, 112, 118]
 
 
 for i in range(cant_ordenes):
@@ -44,64 +42,76 @@ for i in range(cant_ordenes):
 #Ley de enfriamiento
 T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 
-time_ini=time.time()
 
+time_ini=time.time()
 #Se realiza el temple orden por orden
 for order in list_order:
 
     #Se busca las coordenadas de estos puntos en el layout
-    list_order2=[]
-    for q2 in order:
+    ordenesPosiciones = list(map(lambda x:almacen.getPosicionProducto(x),order))
 
-        it=0
-
-        for q in lista_A:
-
-            if q2 in q:
-
-                a=q.index(q2)
-                list_order2.append([it,a])
-
-            it +=1
-
-    temple=anneling(list_order2,T,osbtaculos,2,[0,0],[0,0],fin=True)
-    [way,resultado,E]=temple.search()
+    #Se realiza el temple
+    temple=anneling(ordenesPosiciones,T,almacen.obstaculos,2,empiezaEN,terminaEN,fin=True)
+    [way,resultado,E]=temple.search(caminoTotal=True)
 
     order2=[]
     for i in resultado:
-        order2.append(lista_A[i[0]][i[1]])
+        order2.append(almacen.getproducto(i))
     
     print(f"El mejor camino para realizar las ordenes {order} es: {order2} \n\n")
     
     tim=time.time()-time_ini
     print(tim)
+
+    #Lista de energias finales
     list_E2.append(E[-1])
+
+    #Energia promedio
     E2+=np.array(E)
+
+    plt.figure(1)
     plt.plot(np.linspace(0,(len(E)-1),len(E)),np.array(E))
+    plt.title("Energia de las soluciones")
+    plt.xlabel("it")
+    plt.ylabel("E")
 
 
-for i in way:
 
-    lista_A[i[0]][i[1]]="O"
+#Grafica el ultimo camino obtenido
+layout=mapa(almacen)
+layout.start()
+layout.printCamino(way,animar=0.1)
 
-for i in list_order2:
+input("Presione entre para continuar\n")
 
-    lista_A[i[0]][i[1]]="P"
-
-stirng=""
-for q in lista_A:
-
-    for i in q:
-
-        stirng+="{:^5}".format(i)
-
-    stirng+="\n\n"
-
-print(f"El mejor camino para realizar las ordenes {order} es: {order2} \n\n")
-print(stirng.replace("O",Fore.RED+ Style.BRIGHT+"O"+Style.RESET_ALL).replace("P",Fore.GREEN+ Style.BRIGHT+"P"+Style.RESET_ALL))
 E2=E2/cant_ordenes
+
+plt.figure(2)
+plt.xlabel("E pormedio")
+plt.ylabel("it")
 plt.plot(np.linspace(0,(len(E2)-1),len(E2)),E2)
-print(f"Promedio:{E2[-1]}")
+
+
+plt.figure(3)
+plt.title("Agenda de temperatura")
+plt.xlabel("it")
+plt.ylabel("T")
+plt.plot(np.linspace(0,(len(T)-1),len(T)),T)
+
+
 print(f"Lista de energia finales:{list_E2}")
+print(f"Promedio:{E2[-1]}")
+E2array=np.array(list_E2)
+des=np.std(E2array)
+print(f"Desviacion estandar: {des}")
+
+plt.figure(4)
+aux=E2array-E2[-1]*np.ones((len(E2array)))
+aux=aux/E2[-1]*100
+indices=[i for i in range(cant_ordenes)]
+plt.bar(indices,aux,label='it')
+plt.title("Desviacion con respecto a la e promedio en %")
+plt.xlabel("it")
+plt.ylabel("desE%")
 
 plt.show()
