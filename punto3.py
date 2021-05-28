@@ -33,8 +33,6 @@ list_E2=[]
 #Genera ordenes aleatorias
 list_order=[]
 order_aux=random.sample(range(100),len_ordenes)
-
-
 for i in range(cant_ordenes):
     list_order.append(order_aux)
 
@@ -109,8 +107,8 @@ plt.figure(4)
 aux=E2array-E2[-1]*np.ones((len(E2array)))
 aux=aux/E2[-1]*100
 indices=[i for i in range(cant_ordenes)]
-plt.bar(indices,aux,label='it')
-plt.title("Desviacion con respecto a la e promedio en %")
+plt.bar(indices,abs(aux),label='it')
+plt.title("Desviacion con respecto a la E promedio en %")
 plt.xlabel("it")
 plt.ylabel("desE%")
 
