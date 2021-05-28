@@ -1,4 +1,4 @@
-#Dado un punto en el espacio articular de un robot serie de 6 grados de libertad, 
+# Dado un punto en el espacio articular de un robot serie de 6 grados de libertad, 
 # encontrar el camino más corto para llegar hasta otro punto utilizando el algoritmo A*. 
 # Genere aleatoriamente los puntos de inicio y fin, 
 # y genere también aleatoriamente obstáculos que el robot debe esquivar, siempre en el espacio articular. 
@@ -20,6 +20,7 @@ d=6     # Dimension espacial
 #R.qlim(5,1:2) = [-200, 200]*pi/180;
 #R.qlim(6,1:2) = [-400, 400]*pi/180;
     
+#Elegimos el punto inicial de manera aleatoria dentro de los limites articulares
 punto_inicial=[]
 punto_inicial.append(random.randrange(-180,  180,n))
 punto_inicial.append(random.randrange(-100,  100,n))
@@ -28,6 +29,7 @@ punto_inicial.append(random.randrange(-200, 200,n))
 punto_inicial.append(random.randrange(-200, 200,n))
 punto_inicial.append(random.randrange(-400, 400,n))
 
+#Elegimos el punto final de manera aleatoria dentro de los limites articulares
 punto_final= []
 punto_final.append(random.randrange(-180,  180,n))
 punto_final.append(random.randrange(-100,  100,n))
@@ -36,26 +38,34 @@ punto_final.append(random.randrange(-200, 200,n))
 punto_final.append(random.randrange(-200, 200,n))
 punto_final.append(random.randrange(-400, 400,n))
 
+#Creamos puntos de obstaculos aleatorios
 obstaculos=[]
 for i in range(m):
     obstaculos.append([random.randrange(0,360, n) for i in range(d)])
 
-
+#Creamos un camino para la posicion y otro para la orientacion
 camino_A=[]
 camino_B=[]
-posicion=A_star(punto_inicial[0:3],punto_final[0:3],3,12,obstaculos)
-posicion_int=posicion.buscar_camino()
 
+#Buscamos el camino de la posicion para una discretizacion del espacio grande
+posicion=A_star(punto_inicial[0:3],punto_final[0:3],3,12,obstaculos)
+posicion_int=posicion.buscar_camino(camino_total=True)
+
+#Buscamos el camino de la posicion para una discretizacion del espacio chica
 for i in range(len(posicion_int)-1):
     posicion=A_star(posicion_int[i+1],posicion_int[i],3,1,obstaculos)
-    camino_A.extend(posicion.buscar_camino())
+    camino_A.extend(posicion.buscar_camino(camino_total=True))
 
+#Buscamos el camino de la orientacion para una discretizacion del espacio grande
 orientacion=A_star(punto_inicial[3:6],punto_final[3:6],3,12,obstaculos)
-posicion_int=orientacion.buscar_camino()
+posicion_int=orientacion.buscar_camino(camino_total=True)
+
+#Buscamos el camino de la orientacion para una discretizacion del espacio chica
 for i in range(len(posicion_int)-1):
     orientacion=A_star(posicion_int[i+1],posicion_int[i],3,1,obstaculos)
-    camino_B.extend(orientacion.buscar_camino())
+    camino_B.extend(orientacion.buscar_camino(camino_total=True))
 
+#Formateamos la respuesta
 print(f"El mejor camino entre [{punto_inicial}, {punto_final}] es:\n")
 print("qt = [")
 

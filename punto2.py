@@ -1,67 +1,30 @@
 
 import random
-import colorama
-from colorama import Fore,Style
 from A_estrella import A_star,nodos,nodo_inicial
+from LayoutAlmacen import Almacen,mapa
 
-colorama.init() #Libreria que me permite camibar el color de salida del print()
 
-lista_A=[]      #Lista que contiene el mapeo del layout
-osbtaculos=[]   #Lista que contiene las direccion de las estanterias dentro de lista_A, que van a ser consideradas como obstaculos por nuestro algoritmo A*
+# Se crea el layout
+almacen = Almacen()
+layout=mapa(almacen)
+layout.start()
 
-it=0
-aa=1
-
-# Se crea el layout asignando un numero a cada estanteria y con '*' a los pasillos
-for i in range(16):
-    
-    for i in range(13):
-
-        lista_aux=[]
-
-        if i%4==0:
-            lista_aux.extend( ["*" for j in range(19)])
-        else:
-
-            for j in range(19):
-                if aa%3==1:
-                    lista_aux.append("*")
-                
-                else:
-                    it +=1
-                    lista_aux.append(it)
-                    osbtaculos.append([i,j])
-                aa +=1
-        lista_A.append(lista_aux)
-        aa=1
-
-#Se elige una estanteria inicial y final al azar
-punto_inicial=random.randrange(0,120,1)
-punto_final=random.randrange(0,120,1)
+#Se elige un producto inicial y final al azar
+pro_inicial=random.sample(range(1,100),1)
+pro_final=random.sample(range(1,100),1)
 
 #Se busca las coordenadas de estos puntos en el layout
-it=0
-for q in lista_A:
-    if punto_inicial in q:
-        a=q.index(punto_inicial)
-        aux1=[it,a]
-    if punto_final in q:
-        a=q.index(punto_final)
-        aux2=[it,a]
-    it +=1
+punto_inicial_coord = almacen.getPosicionProducto(pro_inicial[0])
+punto_final_coord = almacen.getPosicionProducto(pro_final[0])
 
 #Se realiza la busqueda con el algoritmo A*
-posicion=A_star(aux1,aux2,2,1,osbtaculos)
+posicion=A_star(punto_final_coord ,punto_inicial_coord,2,1,almacen.obstaculos)
 posicion_int=posicion.buscar_camino(camino_total=True)
+
 #Se acondicionan los datos para ser mostrados
-for i in posicion_int:
-    lista_A[i[0]][i[1]]="O"
 
-stirng=""
-for q in lista_A:
-    for i in q:
-        stirng+="{:^5}".format(i)
+print(f"El mejor camino del producto {pro_inicial[0]} que se encuentra en la posicion {punto_inicial_coord} al {pro_final[0]} que se encuentra en la posicion {punto_final_coord} es: \n{posicion_int}")
 
-    stirng+="\n\n"
-print(f"El mejor camino entre [{punto_inicial}, {punto_final}] es:\n\n")
-print(stirng.replace("O",Fore.RED+ Style.BRIGHT+"O"+Style.RESET_ALL))
+layout.printCamino(posicion_int,animar=0.1)
+
+input("Presione entre para terminar\n")

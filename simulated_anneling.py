@@ -40,7 +40,7 @@ class anneling():
     def energy(self,state,camino_total=False):
         
         # Tengo un estado (conjunto de posiciones a unir)
-        print("TEMPLE>> Calculando energia del estado:",state)
+        #print("TEMPLE>> Calculando energia del estado:",state)
         # 
 
         # Si camino total = False, solo calculo la distancia
@@ -67,10 +67,10 @@ class anneling():
         # Que es list_way y way?
 
         if camino_total==True:
-            print("TEMPLE>> Se devuelve el total:",list_way)
+            #print("TEMPLE>> Se devuelve el total:",list_way)
             return list_way
         else:
-            print("TEMPLE>> Se devuelve el NO total:",way)
+            #print("TEMPLE>> Se devuelve el NO total:",way)
             return way
 
 
