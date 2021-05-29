@@ -2,11 +2,13 @@ import numpy as np
 import random
 import math
 from A_estrella import A_star,nodos,nodo_inicial
+from cache import Cache
 
 class anneling(): 
 
-    def __init__(self,_order,_T,_obstaculos,_spatialdimension,inicio,list_fin,fin=False):
-
+    def __init__(self,cache,_order,_T,_obstaculos,_spatialdimension,inicio,list_fin,fin=False):
+        
+        self.cache = cache
         self.order=_order
         self.tolerancia = 10**(-4) # cuando la temperatura esta muy cerca de cero termina
         self.T=_T
@@ -38,11 +40,8 @@ class anneling():
 
     #Devuelve la energia del conjunto de ordenes o el camino
     def energy(self,state,camino_total=False):
-        
         # Tengo un estado (conjunto de posiciones a unir)
         #print("TEMPLE>> Calculando energia del estado:",state)
-        # 
-
         # Si camino total = False, solo calculo la distancia
         # Sino devuelvo toda la solucion
         list_way=[]
@@ -50,22 +49,17 @@ class anneling():
 
         if (self.end):
             state.append(self.list_end)
-            
-          
         state.insert(0,self.start)
 
         for i in range(self.d2+1):
-
-            A_object=A_star(state[i+1],state[i],self.ds,1,self.obstaculos)
-
             if camino_total==True:
-                
+                A_object=A_star(state[i+1],state[i],self.ds,1,self.obstaculos)
                 list_way.extend(A_object.buscar_camino(camino_total=True))
-            
             else:
-                way+=A_object.buscar_camino()
-        # Que es list_way y way?
-
+                # A_object=A_star(state[i+1],state[i],self.ds,1,self.obstaculos)
+                # way+=A_object.buscar_camino()
+                way+=self.cache.distanciaEntre(state[i+1],state[i],self.ds,self.obstaculos)
+        
         if camino_total==True:
             #print("TEMPLE>> Se devuelve el total:",list_way)
             return list_way
@@ -73,9 +67,7 @@ class anneling():
             #print("TEMPLE>> Se devuelve el NO total:",way)
             return way
 
-
     def probability(self,delta_energy,Temp):
-
         return math.exp(delta_energy/Temp)
 
     def search(self,caminoTotal=False):
@@ -100,7 +92,6 @@ class anneling():
                 self.E1=E2
 
             else:
-
                 prob=self.probability(deltaenergy,self.T[i])
                 choise=random.choices([0,1],[1-prob,prob])
                 if (choise[0]==1): 

@@ -2,6 +2,7 @@
 #Implementar un algoritmo genético para resolver el problema de optimizar la ubicación de los
 #productos en el almacén, de manera de optimizar el picking de los mismos. Considere que
 
+from cache import Cache
 from LayoutAlmacen import Almacen
 from simulated_anneling import anneling, ley_enfriamiento
 from genetic import genetic
@@ -27,13 +28,12 @@ tem_max=5000    #Temperatur maxima
 # cant_ordenes=2  #Cantidad de ordenes
 # len_ordenes=5  #Longitud de ordenes
 
-
 almacen = Almacen(plot=True)
+cache = Cache(almacen)
 
 T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 #Creacion de la poblacion incial
 
-
 cant_poblacion = 10 #Numeros de individuos de una poblacion
-alg_genetic=genetic(almacen,cant_poblacion,list_order,T)
+alg_genetic=genetic(almacen,cache,cant_poblacion,list_order,T)
 print(alg_genetic.process())

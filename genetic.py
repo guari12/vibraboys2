@@ -6,9 +6,10 @@ from simulated_anneling import anneling, ley_enfriamiento
 
 class genetic():
 
-    def __init__(self,almacen,_cant_poblacion,_list_ordenes,_T,_cant_prod=108):
+    def __init__(self,almacen,cache,_cant_poblacion,_list_ordenes,_T,_cant_prod=108):
 
         self.almacen = almacen
+        self.cache = cache
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
         self.cant_pro=_cant_prod
         self.poblacion=[]                     #Poblacion inicial 
@@ -37,7 +38,7 @@ class genetic():
 
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
 
-            temple=anneling(ordenesPosiciones ,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
+            temple=anneling(self.cache,ordenesPosiciones ,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
             E=temple.search()
             fit+=E
             
