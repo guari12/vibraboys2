@@ -4,7 +4,7 @@
 
 from cache import Cache
 from LayoutAlmacen import Almacen
-from simulated_anneling import anneling, ley_enfriamiento
+from simulated_anneling import ley_enfriamiento
 from genetic import genetic
 from leerOrdenes import getOrdenes
 

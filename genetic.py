@@ -1,6 +1,6 @@
 import random
-from numpy.lib.shape_base import kron
-from simulated_anneling import anneling, ley_enfriamiento
+import numpy as np
+from simulated_anneling import anneling
 #from LayoutAlmacen import Almacen
 
 
@@ -11,7 +11,7 @@ class genetic():
         self.almacen = almacen
         self.cache = cache
         self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
-        self.cant_pro=_cant_prod
+        self.cant_pro=_cant_prod              #Cantidad de productos
         self.poblacion=[]                     #Poblacion inicial 
         #Creacion de la poblacion incial 
         self.set_poblacion()
@@ -46,7 +46,8 @@ class genetic():
 
     def cross_over(self,cant_cross=1):
         
-        pares=[random.sample(self.poblacion_best,2) for i in range(round(self.cant_poblacion/2))]
+        prob=self.list_fit/np.sum(np.array(self.list_fit))
+        pares=[random.choices(self.poblacion_best,self.list_fit,2) for i in range(round(self.cant_poblacion/2))]
         self.poblacion=[]
 
         for i in range(round(self.cant_poblacion/2)):
@@ -122,7 +123,7 @@ class genetic():
 
     def get_best(self):
 
-        list_fit=[]                 #Lista de fitness
+        self.list_fit=[]                 #Lista de fitness
         self.poblacion_best=[]      #Lista con los mejores
 
         it=0
@@ -130,15 +131,15 @@ class genetic():
 
         for invididuo in self.poblacion:
 
-            list_fit.append(self.fitness(invididuo))
-            dictor[list_fit[-1]]=it
+            self.list_fit.append(self.fitness(invididuo))
+            dictor[self.list_fit[-1]]=it
             it+=1        
 
-        list_fit.sort()
+        self.list_fit.sort()
             
         for i in range(self.k):
 
-            index=dictor[list_fit[i]]
+            index=dictor[self.list_fit[i]]
             self.poblacion_best.append(self.poblacion[index])
              
 
