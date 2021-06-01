@@ -48,22 +48,22 @@ camino_A=[]
 camino_B=[]
 
 #Buscamos el camino de la posicion para una discretizacion del espacio grande
-posicion=A_star(punto_inicial[0:3],punto_final[0:3],3,12,obstaculos)
-posicion_int=posicion.buscar_camino(camino_total=True)
+posicion=A_star(3,12,obstaculos)
+posicion_int=posicion.buscar_camino(punto_inicial[0:3],punto_final[0:3],camino_total=True)
 
 #Buscamos el camino de la posicion para una discretizacion del espacio chica
 for i in range(len(posicion_int)-1):
-    posicion=A_star(posicion_int[i+1],posicion_int[i],3,1,obstaculos)
-    camino_A.extend(posicion.buscar_camino(camino_total=True))
+    
+    camino_A.extend(posicion.buscar_camino(posicion_int[i+1],posicion_int[i],camino_total=True))
 
 #Buscamos el camino de la orientacion para una discretizacion del espacio grande
-orientacion=A_star(punto_inicial[3:6],punto_final[3:6],3,12,obstaculos)
-posicion_int=orientacion.buscar_camino(camino_total=True)
+orientacion=A_star(3,12,obstaculos)
+posicion_int=orientacion.buscar_camino(punto_inicial[3:6],punto_final[3:6],camino_total=True)
 
 #Buscamos el camino de la orientacion para una discretizacion del espacio chica
 for i in range(len(posicion_int)-1):
-    orientacion=A_star(posicion_int[i+1],posicion_int[i],3,1,obstaculos)
-    camino_B.extend(orientacion.buscar_camino(camino_total=True))
+    
+    camino_B.extend(orientacion.buscar_camino(posicion_int[i+1],posicion_int[i],camino_total=True))
 
 #Formateamos la respuesta
 print(f"El mejor camino entre [{punto_inicial}, {punto_final}] es:\n")

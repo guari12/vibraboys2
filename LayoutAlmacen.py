@@ -1,4 +1,4 @@
-# Este es mi brach de trabajo
+
 from random import randint
 
 # Estas son para la parte grafica

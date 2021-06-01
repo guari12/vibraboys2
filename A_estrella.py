@@ -34,18 +34,8 @@ class nodo_inicial():
 class A_star():
 
 
-    def __init__(self,punto_incial,_punto_final,_dim,_paso,_obstaculos):
+    def __init__(self,_dim,_paso,_obstaculos):
 
-        self.Fun_busqueda=[]
-        self.lista_abierta=[]
-        self.lista_cerrada=[]
-        nodos.punto_final=_punto_final
-        nodos.numNodos=1
-        self.punto_final=_punto_final
-        self.nodo_explorar=nodo_inicial(punto_incial)
-        self.lista_abierta.append(self.nodo_explorar)
-        self.Fun_busqueda.append(self.nodo_explorar.F)
-        self.lista_cerrada.append(self.nodo_explorar.ubicacion)
         self.dim=_dim
         self.paso=_paso
         self.obstaculos=_obstaculos
@@ -69,10 +59,65 @@ class A_star():
                 self.neighbors(vec_izq,it+1+i)
                 self.neighbors(vec_der,it+1+i)
     
-    def buscar_camino(self,camino_total=False):
+    def isobstaculo(self,nodo_aux,ff):
+
+        if (nodo_aux.ubicacion in self.obstaculos): 
+
+            self.Fun_busqueda[ff]=10e38
+            return False
+        
+        return True
+
+    def isinlistcerrada(self,nodo_aux,ff):
+
+        if (nodo_aux.ubicacion in self.lista_cerrada) :
+
+            self.Fun_busqueda[ff]=10e38
+            return False
+
+        return True
+
+    def together(self,nodo_aux,ff):
+
+        if self.nodo_explorar.numAnt==-1:
+
+            if nodo_aux.ubicacion==self.punto_final:
+
+                self.Fun_busqueda[ff]=10e38
+                return False
+
+        return True
+
+    def end_point(self,nodo_aux,camino_total):
+
+            camino_nodos=[nodo_aux.ubicacion]
+
+            if camino_total==True:
+
+                while (nodo_aux.numAnt!=-1):
+                    nodo_aux=self.lista_abierta[nodo_aux.numAnt]
+                    camino_nodos.append(nodo_aux.ubicacion)
+                return camino_nodos
+
+            else:
+                        
+                return nodo_aux.camino_recorrido
+
+    
+    def buscar_camino(self,punto_incial,_punto_final,camino_total=False):
+
+        self.Fun_busqueda=[]
+        self.lista_abierta=[]
+        self.lista_cerrada=[]
+        nodos.punto_final=_punto_final
+        nodos.numNodos=1
+        self.punto_final=_punto_final
+        self.nodo_explorar=nodo_inicial(punto_incial)
+        self.lista_abierta.append(self.nodo_explorar)
+        self.Fun_busqueda.append(self.nodo_explorar.F)
+        self.lista_cerrada.append(self.nodo_explorar.ubicacion)
 
         iterar=True
-        ent=True
 
         while (iterar):
 
@@ -80,46 +125,22 @@ class A_star():
 
             it=True
             
-
             while(it):
                 
-                ent=True
+                
                 ff=self.Fun_busqueda.index(min(self.Fun_busqueda))
                 nodo_aux=self.lista_abierta[ff]
 
-                if self.nodo_explorar.numAnt==-1:
+                ent1=self.together(nodo_aux,ff)
 
-                    if nodo_aux.ubicacion==self.punto_final:
-                        self.Fun_busqueda[ff]=10e38
-                        ent=False
+                if (nodo_aux.ubicacion == self.punto_final) and ent1:
+                    return self.end_point(nodo_aux,camino_total)
 
-                if (nodo_aux.ubicacion == self.punto_final) and ent:
+                ent2=self.isobstaculo(nodo_aux,ff)
 
-                    camino_nodos=[nodo_aux.ubicacion]
+                ent3=self.isinlistcerrada(nodo_aux,ff)
 
-                    if camino_total==True:
-
-                        while (nodo_aux.numAnt!=-1):
-                            nodo_aux=self.lista_abierta[nodo_aux.numAnt]
-                            camino_nodos.append(nodo_aux.ubicacion)
-                        return camino_nodos
-
-                    else:
-                        
-                        return nodo_aux.camino_recorrido
-
-
-                if (nodo_aux.ubicacion in self.obstaculos): 
-
-                    self.Fun_busqueda[ff]=10e38
-                    ent=False
-
-                if (nodo_aux.ubicacion in self.lista_cerrada) :
-
-                    self.Fun_busqueda[ff]=10e38
-                    ent=False
-
-                if (ent):
+                if (ent1 and ent2 and ent3):
 
                     self.lista_cerrada.append(self.lista_abierta[ff].ubicacion)
                     self.nodo_explorar=self.lista_abierta[ff]

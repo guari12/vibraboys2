@@ -1,6 +1,6 @@
 
 import random
-from A_estrella import A_star,nodos,nodo_inicial
+from A_estrella import A_star
 from LayoutAlmacen import Almacen,mapa
 
 
@@ -18,8 +18,8 @@ punto_inicial_coord = almacen.getPosicionProducto(pro_inicial[0])
 punto_final_coord = almacen.getPosicionProducto(pro_final[0])
 
 #Se realiza la busqueda con el algoritmo A*
-posicion=A_star(punto_final_coord ,punto_inicial_coord,2,1,almacen.obstaculos)
-posicion_int=posicion.buscar_camino(camino_total=True)
+posicion=A_star(2,1,almacen.obstaculos)
+posicion_int=posicion.buscar_camino(punto_final_coord ,punto_inicial_coord,camino_total=True)
 
 #Se acondicionan los datos para ser mostrados
 

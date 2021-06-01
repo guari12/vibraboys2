@@ -1,29 +1,33 @@
 import random
 import numpy as np
 from simulated_anneling import anneling
-#from LayoutAlmacen import Almacen
+import time
 
 
 class genetic():
 
     def __init__(self,almacen,cache,_cant_poblacion,_list_ordenes,_T,_cant_prod=108):
 
-        self.almacen = almacen
+        self.almacen = almacen                      
         self.cache = cache
-        self.cant_poblacion = _cant_poblacion #Numeros de individuos de una poblacion
-        self.cant_pro=_cant_prod              #Cantidad de productos
-        self.poblacion=[]                     #Poblacion inicial 
+        self.cant_poblacion = _cant_poblacion           #Numeros de individuos de una poblacion
+        self.cant_pro=_cant_prod                        #Cantidad de productos
+        self.poblacion=[]                               #Poblacion inicial 
+        self.parespadres=round(self.cant_poblacion/2)
+        self.list_fitbest=[]
+        self.list_fit=[0]
+        self.prob_mutacion=0.1
         #Creacion de la poblacion incial 
         self.set_poblacion()
-        self.cant_iter=10
+        self.cant_iter=200
         self.list_ordenes=_list_ordenes
-        self.k=round(self.cant_poblacion*0.5)
+        self.k=round(self.cant_poblacion*0.4)
         
         self.T=_T   #Agenda de enfriamiento
         self.obstaculos=self.almacen.obstaculos
 
     def genoma(self):
-        return random.sample(range(1,self.cant_pro+1),self.cant_pro)
+        return random.sample(range(0,self.cant_pro),self.cant_pro)
     
     def set_poblacion(self):
         for i in range(self.cant_poblacion):
@@ -33,89 +37,115 @@ class genetic():
     def fitness(self,individuo):
 
         fit=0
+        #Carga cada individuo al almacen
         self.almacen.cargarProductos(individuo)
+        temple=anneling(self.cache,self.T,self.obstaculos,2)
+        #Se realiza el temple simulado orden por orden
         for order in self.list_ordenes :
-
-            ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
-
-            temple=anneling(self.cache,ordenesPosiciones ,self.T,self.obstaculos,2,[0,0],[0,0],fin=True)
-            E=temple.search()
-            fit+=E
             
+            #Busca las posiciones de los productos en el almacen
+            ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
+            #Realiza el temple
+            E=temple.search(ordenesPosiciones ,[0,0],[0,0])
+            fit+=E[-1]
+
+        #Devuelve el costo promedio de las ordenes historicas
         return  fit/len(self.list_ordenes)
 
-    def cross_over(self,cant_cross=1):
+    def probability(self):
+
+        prob=self.list_fit/np.sum(np.array(self.list_fit))*100
+        prob=np.ones(np.shape(prob))*100-prob
+
+        return prob
+
+    def fathers(self,prob):
+
+        pares=[]
+        for i in range(self.parespadres):
+            equal=True
+
+            while equal:
+
+                ind=random.choices(range(len(self.poblacion_best)),prob[0:len(self.poblacion_best)],k=2)
+                if ind[0]!=ind[1]:
+                    equal=False
+
+            pares.append([self.poblacion_best[ind[0]],self.poblacion_best[ind[1]]]) 
         
-        prob=self.list_fit/np.sum(np.array(self.list_fit))
-        pares=[random.choices(self.poblacion_best,self.list_fit,2) for i in range(round(self.cant_poblacion/2))]
+        return pares
+
+
+    def cross_over(self):
+        
+        #Se calcula probabilidad de ser elegidos como padres
+        prob=self.probability()
+
         self.poblacion=[]
 
-        for i in range(round(self.cant_poblacion/2)):
-            
-            individuo_aux1=pares[i][0]
-            individuo_aux2=pares[i][1]
+        #Se seleccionan n pares de padres
+        pares=self.fathers(prob)
 
-            index=random.sample(range(len(individuo_aux1)),2*cant_cross)
+        #Se realiza el crossover
+        for ii in range(self.parespadres):
+            
+            padres=[pares[ii][0],pares[ii][1]]
+
+            index=random.sample(range(len(padres[1])),2)
             index.sort()
 
-            aux1=individuo_aux2[index[0]:index[1]]
-            aux2=individuo_aux1[index[0]:index[1]]
+            ind=[padres[1][index[0]:index[1]],padres[0][index[0]:index[1]]]
 
-            for j in [aux1.copy(),aux2.copy()]:
+            for j in range(2):
                 
                 aa=0
-                if j==aux1:
-                    aux3=[]
-                    aux3=individuo_aux1[index[1]:]
-                    aux3.extend(individuo_aux1[0:index[0]])
-                    individuo=individuo_aux1
-                    aux4=aux2
-
-                if j==aux2:
-                    aux3=[]
-                    aux3=individuo_aux2[index[1]:]
-                    aux3.extend(individuo_aux2[0:index[1]])
-                    individuo=individuo_aux2
-                    aux4=aux1
+                individuo=padres[j]
+                aux1=ind[j].copy()
+                aux2=padres[j][index[0]:index[1]]
+                aux3=[]
+                aux3=padres[j][index[1]:]
+                aux3.extend(padres[j][0:index[j]])
 
                 for i in aux3:
                     
-                    if i in j:
+                    if i in aux1:
 
                         pass
 
-                    elif (len(j)+index[0])>=len(individuo):
+                    elif (len(aux1)+index[0])>=len(individuo):
 
-                        j.insert(aa,i)
+                        aux1.insert(aa,i)
                         aa+=1
                         
                     else:
 
-                        j.append(i)
+                        aux1.append(i)
 
                     if aux3.index(i)==len(aux3)-1:
 
-                        if len(j)==len(individuo):
-                            pass
+                        if len(aux1)<len(individuo):
 
-                        if len(j)<len(individuo):
-                            for i in range((len(individuo)-len(j))):
+                            bb=len(aux1)
+                            for i2 in range((len(individuo)-bb)):
+
                                 index2=0
-                                aux5=aux4[index2]
-                                while aux5 in j:
+                                aux5=aux2[index2]
+
+                                while aux5 in aux1:
+
                                     index2+=1
-                                    aux5=aux4[index2]
+                                    aux5=aux2[index2]
 
-                                if (len(j)+index[0])>=len(individuo):
+                                if (len(aux1)+index[0])>=len(individuo):
 
-                                    j.insert(aa,aux5)
+                                    aux1.insert(aa,aux5)
                                     aa+=1
                                     
                                 else:
 
-                                    j.append(aux5)
+                                    aux1.append(aux5)
 
-                self.poblacion.append(j) 
+                self.poblacion.append(aux1) 
 
         if len(self.poblacion)<self.cant_poblacion:
 
@@ -124,37 +154,73 @@ class genetic():
     def get_best(self):
 
         self.list_fit=[]                 #Lista de fitness
-        self.poblacion_best=[]      #Lista con los mejores
+        self.poblacion_best=[]           #Lista con los mejores
 
         it=0
         dictor={}
 
+        #Se calcula el fitness individuo por individuo 
         for invididuo in self.poblacion:
 
             self.list_fit.append(self.fitness(invididuo))
             dictor[self.list_fit[-1]]=it
-            it+=1        
 
+            it+=1     
+            print(it)   
+
+        #Ordena los fitness de menor a mayor
         self.list_fit.sort()
-            
+        
+        #Devuelve los k mejores individuos(Los que tienen el menor fitness)
         for i in range(self.k):
 
             index=dictor[self.list_fit[i]]
             self.poblacion_best.append(self.poblacion[index])
              
+    def mutacion(self):
+        
+        for i in self.poblacion:
 
+            aux=random.choice(range(0,101))/100
+
+            if aux<self.prob_mutacion:
+                
+                index=random.sample(range(len(i)),2)
+                aux1=i[index[0]]
+                aux2=i[index[1]]
+                i[index[0]]=aux2
+                i[index[1]]=aux1
 
     def process(self):
         
-        #Se selecciona los k mejores individuos
         it=0
-        while it<self.cant_iter:
-
+        iterar=True
+        while iterar:
+            tim_init=time.time()
+            #Se guarda el ultimo mejor fitness
+            fit_plob_ant=self.list_fit[0]
+            #Obtiene los mejores individuos
             self.get_best()
+            self.cache.guardar()
+            #Se guarda el mejor fitness de cada iteracion
+            self.list_fitbest.append(self.list_fit[0])
+            #Se realiza un crossover "Cruce de orden"
             self.cross_over()
+            #Se realiza la mutacion
+            self.mutacion()
+            tim=time.time()-tim_init
             print(it,'\n')
+            print(tim)
             it+=1
 
-        return self.poblacion_best[0]
+            #Se verifica si se cumplio el numero max de it
+            if it>=self.cant_iter:
+                iterar=False
+
+            #Se verifica si hay una convergencia en los fitness
+            # if abs(fit_plob_ant-self.list_fit[0])<0.001:
+            #     iterar=False
+
+        return self.poblacion_best[0],self.list_fitbest
         
         
