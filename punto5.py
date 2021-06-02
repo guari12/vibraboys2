@@ -21,7 +21,7 @@
 # una restriccion Cr involucra 4 variables (TSi,TMi,TSj,TMj)
 
 # NOTA:
-# Hay que definir al incio: variables, dominio y restricciones
+# Hay que definir al incio: variables, dominio y restricciones (ya se dijo antes)
 # luego es usar un A* para ir buscando en el arbol,
 # solo que cada rama no tiene todas las posibles combinaciones
 # sino aquellas que cumplan las restricciones.
