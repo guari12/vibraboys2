@@ -1,4 +1,5 @@
 # Satisfaccion de restricciones
+
 # Problema: ====================================================
 
 # al inicio hay que definir una lista de tareas
@@ -18,3 +19,9 @@
 
 # Restricciones: ====================================================
 # una restriccion Cr involucra 4 variables (TSi,TMi,TSj,TMj)
+
+# NOTA:
+# Hay que definir al incio: variables, dominio y restricciones
+# luego es usar un A* para ir buscando en el arbol,
+# solo que cada rama no tiene todas las posibles combinaciones
+# sino aquellas que cumplan las restricciones.
