@@ -9,19 +9,19 @@ import time
 
 from simulated_anneling import anneling, ley_enfriamiento
 from LayoutAlmacen import Almacen,mapa
-
-
+from cache import Cache
 
 
 #Parametros del modelo
-len_enfria=800  #Longitud de la ley de enfriamiento
-coef_exp=1.03    #Coef de caida exponelcia de la temperatura
+len_enfria=300  #Longitud de la ley de enfriamiento
+coef_exp=1.1    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
-cant_ordenes=50  #Cantidad de ordenes
+cant_ordenes=100  #Cantidad de ordenes
 len_ordenes=20  #Longitud de ordenes
 
 # Se crea el layout
 almacen = Almacen()
+cache = Cache(almacen)
 empiezaEN = [0, 0] #Punto de salida
 terminaEN = [0, 0]
 
@@ -31,32 +31,25 @@ list_E2=[]
 
 
 #Genera ordenes aleatorias
-list_order=[]
-order_aux=random.sample(range(100),len_ordenes)
-for i in range(cant_ordenes):
-    list_order.append(order_aux)
-
+aux=random.sample(range(100),len_ordenes) 
+list_order=[aux for i in range(cant_ordenes) ]
 
 #Ley de enfriamiento
 T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 
 
 time_ini=time.time()
+
 #Se realiza el temple orden por orden
+temple=anneling(cache,T,2)
 for order in list_order:
 
     #Se busca las coordenadas de estos puntos en el layout
     ordenesPosiciones = list(map(lambda x:almacen.getPosicionProducto(x),order))
 
     #Se realiza el temple
-    temple=anneling(ordenesPosiciones,T,almacen.obstaculos,2,empiezaEN,terminaEN,fin=True)
-    [way,resultado,E]=temple.search(caminoTotal=True)
-
-    order2=[]
-    for i in resultado:
-        order2.append(almacen.getproducto(i))
     
-    print(f"El mejor camino para realizar las ordenes {order} es: {order2} \n\n")
+    E=temple.search(ordenesPosiciones,empiezaEN,terminaEN)
     
     tim=time.time()-time_ini
     print(tim)
@@ -73,7 +66,14 @@ for order in list_order:
     plt.xlabel("it")
     plt.ylabel("E")
 
+[way,resultado,E]=temple.search(ordenesPosiciones,empiezaEN,terminaEN,caminoTotal=True)
+cache.guardar()
 
+order2=[]
+for i in resultado:
+    order2.append(almacen.getproducto(i))
+    
+print(f"El mejor camino para realizar las ordenes {order} es: {order2} \n\n")
 
 #Grafica el ultimo camino obtenido
 layout=mapa(almacen)
