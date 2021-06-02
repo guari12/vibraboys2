@@ -10,10 +10,6 @@ import time
 from simulated_anneling import anneling, ley_enfriamiento
 from LayoutAlmacen import Almacen,mapa
 from cache import Cache
-import os
-from leerOrdenes import getOrdenes
-
-
 
 
 #Parametros del modelo
@@ -43,8 +39,9 @@ T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 
 
 time_ini=time.time()
+
 #Se realiza el temple orden por orden
-temple=anneling(cache,T,almacen.obstaculos,2)
+temple=anneling(cache,T,2)
 for order in list_order:
 
     #Se busca las coordenadas de estos puntos en el layout
@@ -70,8 +67,8 @@ for order in list_order:
     plt.ylabel("E")
 
 [way,resultado,E]=temple.search(ordenesPosiciones,empiezaEN,terminaEN,caminoTotal=True)
-
 cache.guardar()
+
 order2=[]
 for i in resultado:
     order2.append(almacen.getproducto(i))

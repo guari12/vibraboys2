@@ -1,17 +1,15 @@
 import random
 import math
-from A_estrella import A_star
 
 
 class anneling(): 
 
-    def __init__(self,cache,_T,_obstaculos,_spatialdimension):
+    def __init__(self,cache,_T,_spatialdimension):
         
         self.cache = cache
         self.T=_T
         self.t=len(_T)
         self.ds=_spatialdimension
-        self.obstaculos=_obstaculos
         self.it=0
 
     def next_state(self):
@@ -38,8 +36,7 @@ class anneling():
 
             if camino_total==True:
 
-                A_object=A_star(self.ds,1,self.obstaculos)
-                list_way.extend(A_object.buscar_camino(state[i+1],state[i],camino_total=True))
+                list_way.extend(self.cache.camino(state[i+1],state[i]))
 
             else:
 

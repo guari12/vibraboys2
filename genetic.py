@@ -6,25 +6,18 @@ import time
 
 class genetic():
 
-    def __init__(self,almacen,cache,_cant_poblacion,_list_ordenes,_T,_cant_prod=108):
-
-        self.almacen = almacen                      
+    def __init__(self,cache,almacen,_T):
+                    
         self.cache = cache
-        self.cant_poblacion = _cant_poblacion           #Numeros de individuos de una poblacion
-        self.cant_pro=_cant_prod                        #Cantidad de productos
+        self.almacen=almacen
         self.poblacion=[]                               #Poblacion inicial 
-        self.parespadres=round(self.cant_poblacion/2)
         self.list_fitbest=[]
         self.list_fit=[0]
         self.prob_mutacion=0.1
-        #Creacion de la poblacion incial 
-        self.set_poblacion()
-        self.cant_iter=200
-        self.list_ordenes=_list_ordenes
-        self.k=round(self.cant_poblacion*0.4)
-        
         self.T=_T   #Agenda de enfriamiento
-        self.obstaculos=self.almacen.obstaculos
+        self.temple=anneling(self.cache,self.T,2)
+        self.cant_iter=200
+        
 
     def genoma(self):
         return random.sample(range(0,self.cant_pro),self.cant_pro)
@@ -39,14 +32,14 @@ class genetic():
         fit=0
         #Carga cada individuo al almacen
         self.almacen.cargarProductos(individuo)
-        temple=anneling(self.cache,self.T,self.obstaculos,2)
+
         #Se realiza el temple simulado orden por orden
         for order in self.list_ordenes :
             
             #Busca las posiciones de los productos en el almacen
             ordenesPosiciones = list(map(lambda x:self.almacen.getPosicionProducto(x),order))
             #Realiza el temple
-            E=temple.search(ordenesPosiciones ,[0,0],[0,0])
+            E=self.temple.search(ordenesPosiciones ,[0,0],[0,0])
             fit+=E[-1]
 
         #Devuelve el costo promedio de las ordenes historicas
@@ -191,17 +184,24 @@ class genetic():
                 i[index[0]]=aux2
                 i[index[1]]=aux1
 
-    def process(self):
+    def process(self,_cant_poblacion,_list_ordenes,_cant_prod=108):
         
         it=0
         iterar=True
+        self.cant_poblacion = _cant_poblacion           #Numeros de individuos de una poblacion
+        self.list_ordenes=_list_ordenes
+        self.cant_pro=_cant_prod                        #Cantidad de productos
+        self.parespadres=round(self.cant_poblacion/2)
+        self.set_poblacion()
+        self.k=round(self.cant_poblacion*0.4)
+
         while iterar:
+
             tim_init=time.time()
             #Se guarda el ultimo mejor fitness
             fit_plob_ant=self.list_fit[0]
             #Obtiene los mejores individuos
             self.get_best()
-            self.cache.guardar()
             #Se guarda el mejor fitness de cada iteracion
             self.list_fitbest.append(self.list_fit[0])
             #Se realiza un crossover "Cruce de orden"

@@ -45,6 +45,10 @@ class Cache():
         json.dump(self.tabla,tf)
         tf.close()
 
+    def camino(self,state1,state):
+
+        return self.A_object.buscar_camino(state1,state,camino_total=True)
+
     def guardar(self):
 
         tf = open(self.path+"/cache.json", "w")
