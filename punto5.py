@@ -2,9 +2,9 @@
 #scheduling. El problema de scheduling consiste en asignar recursos a tareas. Modele las
 #variables, dominio de las mismas, restricciones, etc. Asuma que
 
-# Datos:     .Tares:  -id: identificacion de la tarea
-#                     -M: maquinas que pueden utilizar
-#                     -T: tiempo que se demora (en minutos)
+# Datos:     .Tares:      -id: identificacion de la tarea
+#                         -M: maquinas que pueden utilizar
+#                         -T: tiempo que se demora (en minutos)
 #            .Maquinas:   -id
 #                         -tipo
 
