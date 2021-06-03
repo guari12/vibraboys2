@@ -16,26 +16,38 @@
 #              -Pueden haber 2 o mas maquinas iguales 
 #
 
-import random
+from random import randint
 
-cant_maquinas=10
+cant_maquinas=15
 cant_tareas=20
 max_duracionTarea=20 #min
 
 #Variables
 tiposmaquinas=['torno','amoladora','mezcladora','trituradora','alesadora','fresadora','CNC','oxicorte','impresora 3D','soldadora']
-maquinas=[{'id':i,'tipo':tiposmaquinas[random.sample(range(len(tiposmaquinas)))]} for i in range(cant_maquinas)]
-Tareas=[{'id':i,'M':maquinas[i],'T':random.sample(range(max_duracionTarea))} for i in range(cant_tareas)]
+# maquinas=[{'id':i,'tipo':tiposmaquinas[randint(0,len(tiposmaquinas)-1)]} for i in range(cant_maquinas)]
+# maquinas=[{'id':i,'tipo':tiposmaquinas[randint(0,len(tiposmaquinas)-1)]} for i in range(cant_maquinas)]
+maquinas = []
+for i in range(cant_maquinas):
+    while True:
+        maqAleatoria = tiposmaquinas[randint(0,len(tiposmaquinas)-1)]
+        contador = 1
+        for maquin in maquinas:
+            if maquin == maqAleatoria:
+                contador+=1
+        if contador<=2:
+            break
+    maquinas.append({'id':i,'tipo':maqAleatoria})
+
+tareas=[{'id':i,"T":f"Tarea_{i}",'M':maquinas[randint(0,len(maquinas)-1)]["tipo"],'D':randint(1,max_duracionTarea)} for i in range(cant_tareas)]
 
 tiempo_max=0
 for i in range(cant_tareas):
-    
-    tiempo_max+=Tareas[i]['T']
+    tiempo_max+=tareas[i]['D']
+
+# Ya tengo maquina, tareas y tiempo_max
 
 
-
-
-
+print("FIN")
 # Satisfaccion de restricciones
 
 # Problema: ====================================================
