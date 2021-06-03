@@ -16,10 +16,12 @@
 #               -Pueden haber 2 o mas maquinas iguales 
 
 from random import randint
+import random
 
 cant_maquinas=15
 cant_tareas=20
 max_duracionTarea=20 #min
+cant_rest=10
 
 #Variables
 tiposmaquinas=['torno','amoladora','mezcladora','trituradora','alesadora','fresadora','CNC','oxicorte','impresora 3D','soldadora']
@@ -43,7 +45,24 @@ for i in range(cant_tareas):
 # Ya tengo maquinas, tareas y tiempo_max
 
 
-print("FIN")
+DominioTs=[]
+for i in range(tiempo_max):
+    DominioTs.append(i)
+
+listTS=[]
+listTM=[]
+for i in range(cant_tareas):
+
+    TS={"Tarea":tareas[i],'PeriodoInicio':-1,'PeriodoFin':-1,'Dominio':DominioTs.copy()}
+    TM={"Tarea":tareas[i]["T"],"Maquina":'',"Dominio":tareas[i]['M']}
+    listTS.append(TS)
+    listTM.append(TM)
+
+constraints=[]
+
+ordenTareas=random.sample(range(10))
+
+
 
 # Variables: ====================================================
 # TSi: periodo en que se inicia la tarea (num entero de periodos ej horas)
