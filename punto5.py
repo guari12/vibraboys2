@@ -51,10 +51,12 @@ for i in range(tiempo_max):
 
 listTS=[]
 listTM=[]
+D=[]
 for i in range(cant_tareas):
 
     TS={"Tarea":tareas[i],'PeriodoInicio':-1,'PeriodoFin':-1,'Dominio':DominioTs.copy()}
-    TM={"Tarea":tareas[i]["T"],"Maquina":'',"Dominio":tareas[i]['M']}
+    TM={"Tarea":tareas[i]["id"],"Maquina":'',"Dominio":tareas[i]['M']}
+    D={"Tarea":tareas[i]["id"],'Dominio':DominioTs.copy()}
     listTS.append(TS)
     listTM.append(TM)
 
