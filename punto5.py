@@ -17,6 +17,7 @@
 
 from random import randint
 import random
+from csp import grafo_csp
 
 cant_maquinas=15
 cant_tareas=20
@@ -43,8 +44,6 @@ for i in range(cant_tareas):
     tiempo_max+=tareas[i]['D']
 
 # Ya tengo maquinas, tareas y tiempo_max
-
-
 DominioTs=[]
 for i in range(tiempo_max):
     DominioTs.append(i)
@@ -60,10 +59,9 @@ for i in range(cant_tareas):
     listTS.append(TS)
     listTM.append(TM)
 
-constraints=[]
-
-ordenTareas=random.sample(range(10))
-
+restric=grafo_csp(tareas,DominioTs,maquinas)
+print(restric.constraint)
+print(restric.get_constraints)
 
 
 # Variables: ====================================================
