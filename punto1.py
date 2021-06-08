@@ -4,15 +4,18 @@
 # y genere también aleatoriamente obstáculos que el robot debe esquivar, siempre en el espacio articular. 
 
 
-import numpy as np
+
 import random
-from A_estrella import A_star,nodos,nodo_inicial
+from A_estrella import A_star
 
 
 
 n=12    # Paso
 m=6     # Cantidad de obstaculos
 d=6     # Dimension espacial
+
+#Limites articulares del robo IRB140
+
 #R.qlim(1,1:2) = [-180,  180]*pi/180;
 #R.qlim(2,1:2) = [-100,  100]*pi/180;
 #R.qlim(3,1:2) = [-220,  60]*pi/180;
@@ -48,7 +51,7 @@ camino_A=[]
 camino_B=[]
 
 #Buscamos el camino de la posicion para una discretizacion del espacio grande
-posicion=A_star(3,12,obstaculos)
+posicion=A_star(3,n,obstaculos)
 posicion_int=posicion.buscar_camino(punto_inicial[0:3],punto_final[0:3],camino_total=True)
 
 #Buscamos el camino de la posicion para una discretizacion del espacio chica
