@@ -35,11 +35,8 @@ def revise(csp,Xi,Xj):
         # ==============================================================================
         
         if hay_y==False: # if no value y in Dj...
-            print("Probando eliminar elemento") #delete x from Di
-            print(f"Habian {len(csp.D[I]['Dominio'])} elementos")
+            #delete x from Di
             csp.D[I]["Dominio"].remove(x)
-            print(f"Ahora hay {len(csp.D[I]['Dominio'])} elementos")
-            #self.D[i].pop()
             revised = True
             
     return revised
