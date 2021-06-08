@@ -1,9 +1,4 @@
-class csp():
-    pass
-    def __init__(self):
-        self.X = []
-        self.D = []
-        self.C = []
+
 
 def ac3(csp): #receive binary CSP (X,D,C)
     queue = csp.C # cola de arcos, inicialmente los arcos en el csp
