@@ -37,7 +37,8 @@ class grafo_csp():
 
     def constraint(self):
         print("--- Creando restricciones")
-
+        C = {"id1":{"id2":[],
+                    "id3":[]}}
         for i in self.C: # recorro variables TSMi
             X1 = self.X[i]
             keyA = i
