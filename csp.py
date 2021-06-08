@@ -14,13 +14,24 @@ class grafo_csp():
 
         for i in range(cant_tareas):
 
-            TS={"Tarea":self.tareas[i]['id'],'PeriodoInicio':None,'PeriodoFin':-1,'Dominio':DominioTs.copy()}
-            TM={"Tarea":self.tareas[i]["id"],"Maquina":None,"Dominio":self.tareas[i]['M']}
-            self.D={"Tarea":self.tareas[i]["id"],'Dominio':DominioTs.copy()}
+            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':-1}
+
+            dom=[]
+            for T in DominioTs:
+
+                for M in self.maquinas:
+
+                    if M['tipo']==self.tareas[i]['M']:
+                        dom.append({'M':M['id'],'S':T})
             
-            self.X.append({"TS":None,"TM":TM})
+            self.D.append({"Tarea":self.tareas[i]["id"],'Dominio':dom})
+            
+            self.X.append(TSM)
+        print("")
 
     def constraint(self):
+
+        #di={'1':{'2':{'3':[]}}}
         restriccion={"Alcance":[],"Relacion":[]}
         alcance=[]
         #Recorrido de la lista de tareas
