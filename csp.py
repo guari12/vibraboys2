@@ -81,6 +81,13 @@ class grafo_csp():
                         if len(Cij)>0: # hay restricciones, agregar valores validos
                             self.C[keyA][keyB].update(Cij) # lista de valores posibles en la tarea B
     
+    def getArcos(self):
+        arcos = []
+        for key1 in self.C:
+            for key2 in self.C[key1]:
+                arcos.append((key1,key2))
+        return arcos
+    
     #funcion que setea el dominio temporal entre tareas
     def set_dominio(self,tareas,ids_maquinas,cant_maquinas):
         #Vector que contendra cada una de las posibles restricciones entre dos variables
