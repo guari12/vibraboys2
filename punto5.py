@@ -17,8 +17,8 @@
 
 from backtrack import backtrack
 from random import randint
-import random
 from csp import grafo_csp
+from ac3 import ac3
 
 
 cant_maquinas=15
@@ -56,8 +56,13 @@ Grafo1 = grafo_csp(tareas,DominioTs,maquinas)
 # for i in range(len(tareas)):
 #     for j in range(i+1,len(tareas)):
 #         print(f"Cantidad restricciones entre {i}/{j}: {len(Grafo1.C[i][j])}")
+<<<<<<< HEAD
 assigment={'variables':[],'values':[],'inferences':[]}
 backtrack(Grafo1,assigment,cant_tareas)
+=======
+extender = ac3(Grafo1)
+print("Extiendo el nodo?:",extender)
+>>>>>>> c62c4e2f13617cfbf3b92d8016105cdf7b1fd84d
 print("Fin")
 # Variables: ====================================================
 # TSi: periodo en que se inicia la tarea (num entero de periodos ej horas)
