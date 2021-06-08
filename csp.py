@@ -17,6 +17,7 @@ class grafo_csp():
                 TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None}
 
                 dom=[]
+                
                 for T in DominioTs:
 
                     for M in self.maquinas:
