@@ -60,8 +60,8 @@ for i in range(cant_tareas):
     listTM.append(TM)
 
 restric=grafo_csp(tareas,DominioTs,maquinas)
-print(restric.constraint)
-print(restric.get_constraints)
+print(restric.constraint())
+print(restric.get_constraints())
 
 
 # Variables: ====================================================

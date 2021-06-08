@@ -19,7 +19,7 @@ def ac3(csp): #receive binary CSP (X,D,C)
 def revise(csp,Xi,i,Xj,j):
     revised = False
     for x in csp.D[i]:
-        hay_y = 
+        # hay_y = 
         # hay un "y" en "Dj" que cumpla que (x,y) satisface restricciones entre (Xi,Xj)
         # sino, eliminar ese x del dominio Di y poner revised como true
         pass #

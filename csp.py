@@ -4,19 +4,21 @@ import random
 class grafo_csp():
     def __init__(self,tareas,DominioTs,maquinas,cant_tareas):
         self.X=[]
+        self.D=[]
+        self.C=[]
+        
         self.tareas=tareas
         self.maquinas=maquinas
-        self.C=[]
-        self.listTS=[]
-        self.listTM=[]
-        self.D=[]
+
+        # (m1,1),(m1,2).......,(m3,1),(m3,2)......
+
         for i in range(cant_tareas):
 
-            TS={"Tarea":self.tareas[i]['id'],'PeriodoInicio':-1,'PeriodoFin':-1,'Dominio':DominioTs.copy()}
-            TM={"Tarea":self.tareas[i]["id"],"Maquina":'',"Dominio":self.tareas[i]['M']}
+            TS={"Tarea":self.tareas[i]['id'],'PeriodoInicio':None,'PeriodoFin':-1,'Dominio':DominioTs.copy()}
+            TM={"Tarea":self.tareas[i]["id"],"Maquina":None,"Dominio":self.tareas[i]['M']}
             self.D={"Tarea":self.tareas[i]["id"],'Dominio':DominioTs.copy()}
-            self.listTS.append(TS)
-            self.listTM.append(TM)
+            
+            self.X.append({"TS":None,"TM":TM})
 
     def constraint(self):
         restriccion={"Alcance":[],"Relacion":[]}
