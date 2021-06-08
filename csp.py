@@ -48,10 +48,10 @@ class grafo_csp():
                     keyB = X2["Tarea"] # id de la tarea
                      
                     if self.tareas[i]["M"]==self.tareas[j]["M"]:
-                        try:
-                            self.C[keyA].update({ keyB:{} })
-                        except:
-                            self.C.update({ keyA:{   keyB:  {}    } })
+                        try: # esto es muy importante
+                            self.C[keyA].update({ keyB:{} }) # trata de agregar una restriccione
+                        except: # pero si no estan creadas
+                            self.C.update({ keyA:{   keyB:  {}    } }) # entonces las crea
                                                        #Cij
                         Cij = {}
 
