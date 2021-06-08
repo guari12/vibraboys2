@@ -1,104 +1,86 @@
 
 class grafo_csp():
 
-    def __init__(self,tareas=None,DominioTs=None,maquinas=None,csp=None):
+    def __init__(self,tareas=None,DominioTs=None,maquinas=None):
         print("- Creando Grafo CSP")
-        if csp==None:
-            self.X=[]
-            self.D=[]
-            self.C={} # entro por id tareaA, luego id tareaB y ahi tengo la extension
+        
+        self.X=[]
+        self.D=[]
+        self.C={} # entro por id tareaA, luego id tareaB y ahi tengo la extension
+        
+        self.tareas=tareas
+        self.maquinas=maquinas
+
+        print("-- Creando Variables y Dominios")
+        for i in range(len(tareas)):
+
+            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None}
+
+            dom=[]
             
-            self.tareas=tareas
-            self.maquinas=maquinas
+            for T in DominioTs:
 
-            print("-- Creando Variables y Dominios")
-            for i in range(len(tareas)):
+                for M in self.maquinas:
 
-                TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None}
-
-                dom=[]
-                
-                for T in DominioTs:
-
-                    for M in self.maquinas:
-
-                        if M['tipo']==self.tareas[i]['M']:
-                            dom.append({'M':M['id'],'S':T})
-                
-                self.D.append({"Tarea":self.tareas[i]["id"],'Dominio':dom})
-                
-                self.X.append(TSM)
-                if TSM['Tarea']<len(tareas): # la ultima tarea no se incluye, van de a pares de nodos las restricciones
-                    self.C.update({TSM['Tarea']:{}})
-            self.constraint() # crear las restricciones
-        else:
-            pass # usar el csp anterior para no empezar de cero
+                    if M['tipo']==self.tareas[i]['M']:
+                        dom.append({'M':M['id'],'S':T})
+            
+            self.D.append({"Tarea":self.tareas[i]["id"],'Dominio':dom})
+            
+            self.X.append(TSM)
+            
+        self.constraint() # crear las restricciones
         
         print("---> Grafo creado!!")
 
     def constraint(self):
         print("--- Creando restricciones")
-        C = {"id1":{"id2":[],
-                    "id3":[]}}
-        for i in self.C: # recorro variables TSMi
+        # ejemplo
+        # C = {"id1":{"id3":[],
+        #             "id5":{"m1,1":[]}}}
+        
+        for i in range(len(self.X)): # recorro variables TSMi
             X1 = self.X[i]
-            keyA = i
+            keyA = X1["Tarea"] # id de la tarea
             # diccionario vacio para agregar la sig tarea
 
-            for j in range(i+1,len(self.X)): # para cada TSMi analizo TSMj
-                #print(f"Restricciones: {i}-{j}")
-                X2 = self.X[j]
-                keyB = j
-                self.C[keyA].update({keyB:[]})
+            for j in range(len(self.X)): # para cada TSMi analizo TSMj
+                if i!=j:
+                    #print(f"Restricciones: {i}-{j}")
+                    X2 = self.X[j]
+                    keyB = X2["Tarea"] # id de la tarea
+                    
+                    if self.tareas[i]["M"]==self.tareas[j]["M"]:
+                        self.C.update({ keyA:{   keyB:  {}    } })
+                                                       #Cij
+                        Cij = {}
 
-                restricciones = [] # empiezan vacias las restricciones
-                
-                if X1["PeriodoInicio"]==None and X1["Maquina"]==None:
-                    Dominio1 = self.D[i]["Dominio"]
-                    for valor1 in Dominio1:
-                        if X2["PeriodoInicio"]==None and X2["Maquina"]==None:
+                        Dominio1 = self.D[i]["Dominio"]
+                        for valor1 in Dominio1:
+
+                            restricciones = [] # empiezan vacias las restricciones
+
                             Dominio2 = self.D[j]["Dominio"]
                             for valor2 in Dominio2:
-                                if valor1["M"]!=valor2["M"]: # usan distintas maquinas
-                                    # es valido
-                                    restricciones.append((valor1,valor2))
-                                else: # ver tiempo
+                                
+                                if valor1["M"]==valor2["M"]: # usan distintas maquinas
                                     if valor1["S"]+self.tareas[i]["D"]<valor2["S"]:
                                         # agregar, es valido
-                                        restricciones.append((valor1,valor2))
+                                        restricciones.append(valor2)
                                     elif valor2["S"]+self.tareas[j]["D"]<valor1["S"]:
                                         # agregar, es valido
-                                        restricciones.append((valor1,valor2))
-                                    # sino, no agregar nada
-                        else:
-                            valor2= {   "M":X2["Maquina"],
-                                        "S":X2["PeriodoInicio"]}
-                            restricciones.append((valor1,valor2))
-                else:
-                    valor1= {   "M":X1["Maquina"],
-                                "S":X1["PeriodoInicio"]}
-                    if X2["PeriodoInicio"]==None and X2["Maquina"]==None:
-                        Dominio2 = self.D[j]["Dominio"]
-                        for valor2 in Dominio2:
-                                if valor1["M"]!=valor2["M"]: # usan distintas maquinas
-                                    # es valido
-                                    restricciones.append((valor1,valor2))
-                                else: # ver tiempo
-                                    if valor1["S"]+self.tareas[i]["D"]<valor2["S"]:
-                                        # agregar, es valido
-                                        restricciones.append((valor1,valor2))
-                                    elif valor2["S"]+self.tareas[j]["D"]<valor1["S"]:
-                                        # agregar, es valido
-                                        restricciones.append((valor1,valor2))
-                                    # sino, no agregar nada
-                    else:
-                            valor2= {   "M":X2["Maquina"],
-                                        "S":X2["PeriodoInicio"]}
-                            restricciones.append((valor1,valor2))
-                
-                self.C[keyA][keyB] = restricciones
+                                        restricciones.append(valor2)
+                                else:
+                                    restricciones.append(valor2)
+                                # sino, las maquinas son distintas, no estan restringidas
 
+                            if len(restricciones)>0:
+                                Cij.update({str(valor1):restricciones}) #agregar restricciones
+                            # sino, no agregar nada para ese valor 1 porque no tiene valores para la otra tarea
 
+                        if len(Cij)>0: # hay restricciones, agregar valores validos
+                            self.C[keyA][keyB].update(Cij) # lista de valores posibles en la tarea B
+    
     #funcion que setea el dominio temporal entre tareas
     def set_dominio(self,tareas,ids_maquinas,cant_maquinas):
         #Vector que contendra cada una de las posibles restricciones entre dos variables

@@ -23,7 +23,7 @@ def revise(csp,Xi,Xj):
         hay_y = False
         for y in csp.D[j]: # (m3,1)....,(m4,1)... para Xj
             # si x,y satisfacen las restricciones de Xi, Xj
-            restricciones = csp.getRestricciones(Xi,Xj)
+            restricciones = csp.C[Xi][Xj]
             for solucion in restricciones["extension"]:
                 if [x,y] == solucion: # si mi par x,y es alguno de los x,y posibles
                     hay_y = True # entonces hay un y que cumple
