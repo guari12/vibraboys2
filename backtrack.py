@@ -5,7 +5,7 @@ def backtrack(csp,assigment,cant_tareas):
         return assigment
 
     var=select_unassignedvariable(csp)
-    assigment['variable'].append(var)
+    assigment['variables'].append(var)
     valuelist=order_domain_values(var,csp)
 
     for value in valuelist:
@@ -37,29 +37,36 @@ def select_unassignedvariable(csp):
 
     #En primer lugar elegimos la heuristica MRV
     aux=10e4
-
+    variableMRV=[]
+    aux2=0
     for dom in csp.D:
 
         if len(dom['Dominio'])<aux:
 
             aux=len(dom['Dominio'])
-            variableMRV=dom['id']
+            aux2=dom['Tarea']
 
-        if dom == aux:
+    variableMRV.append(aux2)
 
-            variableMRV.extend(dom['id'])
+    for dom in csp.D:
+        if dom['Tarea']!=aux2:
+            if len(dom['Dominio'])==aux:
+                variableMRV.append(dom['Tarea'])
+    
+
+
 
     #Si hay mas de dos variables MRV se desempata de acuerdo a la Variable más restrictiva
-    if len(variableMRV):
+    if len(variableMRV)>0:
 
         cant_rest=[]
         for var in variableMRV:
+            if var in csp.C.keys():
+                cant_rest.append(len(csp.C[var]))
 
-            cant_rest.append(len(csp.C[str(var)]))
-
-        ind=cant_rest.index(max(cant_rest))
-
-        return variableMRV[ind]
+        if len(cant_rest)>0:
+            ind=cant_rest.index(max(cant_rest))
+            return variableMRV[ind]
 
     return variableMRV[0]
 
@@ -76,7 +83,7 @@ def order_domain_values(var,csp):
 
         aux2=0
 
-        for k in csp.C[str(var)].key():
+        for k in csp.C[var].keys():
                 
             aux2+=len(csp.C[str(var)][k][str(x)] )
 

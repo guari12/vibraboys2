@@ -15,12 +15,14 @@
 #               -Cada maquina puede hacer una sola tarea 
 #               -Pueden haber 2 o mas maquinas iguales 
 
+from backtrack import backtrack
 from random import randint
 import random
 from csp import grafo_csp
 
-cant_maquinas=5
-cant_tareas=20
+
+cant_maquinas=15
+cant_tareas=10
 max_duracionTarea=20 #min
 
 # Maquinas de las tareas
@@ -54,7 +56,8 @@ Grafo1 = grafo_csp(tareas,DominioTs,maquinas)
 # for i in range(len(tareas)):
 #     for j in range(i+1,len(tareas)):
 #         print(f"Cantidad restricciones entre {i}/{j}: {len(Grafo1.C[i][j])}")
-
+assigment={'variables':[],'values':[],'inferences':[]}
+backtrack(Grafo1,assigment,cant_tareas)
 print("Fin")
 # Variables: ====================================================
 # TSi: periodo en que se inicia la tarea (num entero de periodos ej horas)
