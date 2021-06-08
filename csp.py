@@ -1,83 +1,103 @@
-from random import randint
-import random
 
 class grafo_csp():
-    def __init__(self,tareas,DominioTs,maquinas,cant_tareas):
-        self.X=[]
-        self.D=[]
-        self.C=[]
+
+    def __init__(self,tareas=None,DominioTs=None,maquinas=None,csp=None):
+        print("- Creando Grafo CSP")
+        if csp==None:
+            self.X=[]
+            self.D=[]
+            self.C={} # entro por id tareaA, luego id tareaB y ahi tengo la extension
+            
+            self.tareas=tareas
+            self.maquinas=maquinas
+
+            print("-- Creando Variables y Dominios")
+            for i in range(len(tareas)):
+
+                TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None}
+
+                dom=[]
+                for T in DominioTs:
+
+                    for M in self.maquinas:
+
+                        if M['tipo']==self.tareas[i]['M']:
+                            dom.append({'M':M['id'],'S':T})
+                
+                self.D.append({"Tarea":self.tareas[i]["id"],'Dominio':dom})
+                
+                self.X.append(TSM)
+                if TSM['Tarea']<len(tareas): # la ultima tarea no se incluye, van de a pares de nodos las restricciones
+                    self.C.update({TSM['Tarea']:{}})
+            self.constraint() # crear las restricciones
+        else:
+            pass # usar el csp anterior para no empezar de cero
         
-        self.tareas=tareas
-        self.maquinas=maquinas
-
-
-        for i in range(cant_tareas):
-
-            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':-1}
-
-            dom=[]
-            for T in DominioTs:
-
-                for M in self.maquinas:
-
-                    if M['tipo']==self.tareas[i]['M']:
-                        dom.append({'M':M['id'],'S':T})
-            
-            self.D.append({"Tarea":self.tareas[i]["id"],'Dominio':dom})
-            
-            self.X.append(TSM)
-        print("")
+        print("---> Grafo creado!!")
 
     def constraint(self):
+        print("--- Creando restricciones")
 
-        #di={'1'(var):{'2'(var):{'M':1,'3':[],'M':2,'3'},'4':,'5':}}
-        restriccion={"Alcance":[],"Relacion":[]}
-        alcance=[]
+        for i in self.C: # recorro variables TSMi
+            X1 = self.X[i]
+            keyA = i
+            # diccionario vacio para agregar la sig tarea
+
+            for j in range(i+1,len(self.X)): # para cada TSMi analizo TSMj
+                #print(f"Restricciones: {i}-{j}")
+                X2 = self.X[j]
+                keyB = j
+                self.C[keyA].update({keyB:[]})
+
+                restricciones = [] # empiezan vacias las restricciones
+                
+                if X1["PeriodoInicio"]==None and X1["Maquina"]==None:
+                    Dominio1 = self.D[i]["Dominio"]
+                    for valor1 in Dominio1:
+                        if X2["PeriodoInicio"]==None and X2["Maquina"]==None:
+                            Dominio2 = self.D[j]["Dominio"]
+                            for valor2 in Dominio2:
+                                if valor1["M"]!=valor2["M"]: # usan distintas maquinas
+                                    # es valido
+                                    restricciones.append((valor1,valor2))
+                                else: # ver tiempo
+                                    if valor1["S"]+self.tareas[i]["D"]<valor2["S"]:
+                                        # agregar, es valido
+                                        restricciones.append((valor1,valor2))
+                                    elif valor2["S"]+self.tareas[j]["D"]<valor1["S"]:
+                                        # agregar, es valido
+                                        restricciones.append((valor1,valor2))
+                                    # sino, no agregar nada
+                        else:
+                            valor2= {   "M":X2["Maquina"],
+                                        "S":X2["PeriodoInicio"]}
+                            restricciones.append((valor1,valor2))
+                else:
+                    valor1= {   "M":X1["Maquina"],
+                                "S":X1["PeriodoInicio"]}
+                    if X2["PeriodoInicio"]==None and X2["Maquina"]==None:
+                        Dominio2 = self.D[j]["Dominio"]
+                        for valor2 in Dominio2:
+                                if valor1["M"]!=valor2["M"]: # usan distintas maquinas
+                                    # es valido
+                                    restricciones.append((valor1,valor2))
+                                else: # ver tiempo
+                                    if valor1["S"]+self.tareas[i]["D"]<valor2["S"]:
+                                        # agregar, es valido
+                                        restricciones.append((valor1,valor2))
+                                    elif valor2["S"]+self.tareas[j]["D"]<valor1["S"]:
+                                        # agregar, es valido
+                                        restricciones.append((valor1,valor2))
+                                    # sino, no agregar nada
+                    else:
+                            valor2= {   "M":X2["Maquina"],
+                                        "S":X2["PeriodoInicio"]}
+                            restricciones.append((valor1,valor2))
+                
+                self.C[keyA][keyB] = restricciones
 
 
-        for i in range(len(self.tareas)):
-            for j in range(len(self.tareas)):
-                for valor1 in self.D[i]["Dominio"]:
-                    for valor2 in self.D[j]["Dominio"]:
-                        pass
-                        
-                        # verificar el par de valores
-                        # 
-
-
-        #Recorrido de la lista de tareas
-        for TS in self.tareas:
-            cant_tareas=0
-            cant_maquinas=0
-
-            #Conteo de maquinas del tipo requerido por la tarea TS
-            for TM in self.maquinas:
-                if TS["M"]==TM["tipo"]:
-                    cant_maquinas+=1
-            
-            #Recorrido de la lista de tareas en busca de tareas que requieran la misma maquina
-            for TS0 in self.tareas:
-                if TS["M"]==TS0["M"]: #En principio cuenta la misma maquina que se selecciono en primer instancia
-                    cant_tareas+=1
-                    alcance.append(TS0) #El vector de alcance contiene las tareas que implementan la misma maquina
-                    restriccion["Alcance"].append(TS0["id"])
-                    self.tareas.remove(TS0)
-
-            #A la siguiente funcion le paso la tarea actual y devuelve los ids de las maquinas
-            #que hayan disponibles para resolverla
-            ids_maq=self.get_idmaq(TS["M"],cant_maquinas)
-
-            #A la siguinte funcion se le pasa la lista de tareas que requieren la misma maquina y retorna
-            #una lista con las combinaciones de tiempos en que dichas tareas podrian ejecutarse
-            restriccion["Relacion"]=self.set_dominio(alcance,ids_maq,cant_maquinas)
-            self.C.append(restriccion)
-        return self.C
-        
-        
-    def get_constraints(self):
-        return self.C
-
-#funcion que setea el dominio temporal entre tareas
+    #funcion que setea el dominio temporal entre tareas
     def set_dominio(self,tareas,ids_maquinas,cant_maquinas):
         #Vector que contendra cada una de las posibles restricciones entre dos variables
         rest={"id_tarea":'',"id_maq":'',"t_inicio":'',"t_fin":''}
@@ -126,7 +146,6 @@ class grafo_csp():
             ids_maquinas.reverse()
         return restrictions
     
-
     def get_idmaq(self,maquina,cant_maq):
         ids=[]
         for j in range(cant_maq):
