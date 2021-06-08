@@ -34,6 +34,18 @@ class grafo_csp():
         #di={'1':{'2':{'3':[]}}}
         restriccion={"Alcance":[],"Relacion":[]}
         alcance=[]
+
+
+        for i in range(len(self.tareas)):
+            for j in range(len(self.tareas)):
+                for valor1 in self.D[i]["Dominio"]:
+                    for valor2 in self.D[j]["Dominio"]:
+                        pass
+                        
+                        # verificar el par de valores
+                        # 
+
+
         #Recorrido de la lista de tareas
         for TS in self.tareas:
             cant_tareas=0
