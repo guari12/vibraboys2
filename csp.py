@@ -10,7 +10,6 @@ class grafo_csp():
         self.tareas=tareas
         self.maquinas=maquinas
 
-        # (m1,1),(m1,2).......,(m3,1),(m3,2)......
 
         for i in range(cant_tareas):
 
@@ -31,7 +30,7 @@ class grafo_csp():
 
     def constraint(self):
 
-        #di={'1':{'2':{'3':[]}}}
+        #di={'1'(var):{'2'(var):{'M':1,'3':[],'M':2,'3'},'4':,'5':}}
         restriccion={"Alcance":[],"Relacion":[]}
         alcance=[]
 
