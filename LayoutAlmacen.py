@@ -89,8 +89,6 @@ class Almacen():
             if plot:
                 print()
 
-        # Aca ya tengo mi almacen creado como matriz
-        #self.restricciones = self.estanterias # esta variable no la estaba usando
 
     def inicioAleatorio(self):
         # Genero el nodo inicial que tambien es el final ================================================

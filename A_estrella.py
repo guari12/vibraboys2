@@ -10,8 +10,8 @@ class nodos():
         self.ubicacion = _ubicacion
         self.camino_recorridoant=_nodo_anterior.camino_recorrido
         self.camino_recorrido = self.camino_recorridoant + self.dis_euc(self.ubicacion,_nodo_anterior.ubicacion)
-        self.heuristica = self.dis_euc(self.ubicacion,nodos.punto_final)
-        self.F = self.camino_recorrido + self.heuristica
+        self.dist_puntofinal = self.dis_euc(self.ubicacion,nodos.punto_final)
+        self.F = self.camino_recorrido + self.dist_puntofinal
         self.numAnt = _nodo_anterior.num
         self.num=nodos.numNodos
         nodos.numNodos += 1
