@@ -1,4 +1,4 @@
-
+from csp import grafo_csp
 
 def ac3(csp): #receive binary CSP (X,D,C)
     queue = csp.C # cola de arcos, inicialmente los arcos en el csp
