@@ -19,15 +19,15 @@ def revise(csp,Xi,Xj):
     I = Xi
     J = Xj
     revised = False
-    for x in csp.D[I]: # (m1,1)....,(m3,1)... para Xi
-
+    for x in csp.D[I]["Dominio"]: # (m1,1)....,(m3,1)... para Xi
+        
         # Existe algun y talque (x,y) satisfacen restricciones entre (Xi,Xj) ===========
         hay_y = False
-        for y in csp.D[J]: # (m3,1)....,(m4,1)... para Xj
+        for y in csp.D[J]["Dominio"]: # (m3,1)....,(m4,1)... para Xj
             # si x,y satisfacen las restricciones de Xi, Xj
             restricciones = csp.C[Xi][Xj][str(x)]
             for solucion in restricciones:
-                if y == solucion: # si mi par x,y es alguno de los x,y posibles
+                if str(y) == str(solucion): # si mi par x,y es alguno de los x,y posibles
                     hay_y = True # entonces hay un y que cumple
                     break
             if hay_y: # si ya encontre un "y", no busco otros
@@ -35,7 +35,10 @@ def revise(csp,Xi,Xj):
         # ==============================================================================
         
         if hay_y==False: # if no value y in Dj...
-            pass #delete x from Di
+            print("Probando eliminar elemento") #delete x from Di
+            print(f"Habian {len(csp.D[I]['Dominio'])} elementos")
+            csp.D[I]["Dominio"].remove(x)
+            print(f"Ahora hay {len(csp.D[I]['Dominio'])} elementos")
             #self.D[i].pop()
             revised = True
             

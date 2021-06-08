@@ -35,9 +35,6 @@ class grafo_csp():
 
     def constraint(self):
         print("--- Creando restricciones")
-        # ejemplo
-        # C = {"id1":{"id3":[],
-        #             "id5":{"m1,1":[]}}}
         
         for i in range(len(self.X)): # recorro variables TSMi
             X1 = self.X[i]
@@ -51,7 +48,10 @@ class grafo_csp():
                     keyB = X2["Tarea"] # id de la tarea
                     
                     if self.tareas[i]["M"]==self.tareas[j]["M"]:
-                        self.C.update({ keyA:{   keyB:  {}    } })
+                        try:
+                            self.C[keyA].update({ keyB:{} })
+                        except:
+                            self.C.update({ keyA:{   keyB:  {}    } })
                                                        #Cij
                         Cij = {}
 
