@@ -16,8 +16,8 @@
 #               -Pueden haber 2 o mas maquinas iguales 
 
 from random import randint
-import random
 from csp import grafo_csp
+from ac3 import ac3
 
 cant_maquinas=15
 cant_tareas=10
@@ -54,7 +54,7 @@ Grafo1 = grafo_csp(tareas,DominioTs,maquinas)
 # for i in range(len(tareas)):
 #     for j in range(i+1,len(tareas)):
 #         print(f"Cantidad restricciones entre {i}/{j}: {len(Grafo1.C[i][j])}")
-
+extender = ac3(Grafo1)
 print("Fin")
 # Variables: ====================================================
 # TSi: periodo en que se inicia la tarea (num entero de periodos ej horas)
