@@ -19,8 +19,8 @@ from random import randint
 import random
 from csp import grafo_csp
 
-cant_maquinas=15
-cant_tareas=10
+cant_maquinas=5
+cant_tareas=20
 max_duracionTarea=20 #min
 
 # Maquinas de las tareas

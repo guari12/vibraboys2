@@ -11,10 +11,10 @@ def backtrack(csp,assigment,cant_tareas):
     for value in valuelist:
 
         if isconsistent(value,csp,assigment):
-            bool_inference,inference=inference(csp,var,value)
+            bool_inference,var_inference=inference(csp,var,value)
             if bool_inference:
                 assigment['values'].append(value)
-                assigment['inferences'].append(inference)
+                assigment['inferences'].append(var_inference)
                 bool_result,result=backtrack(csp,assigment)
                 if bool_result:
                     return result
@@ -25,8 +25,11 @@ def backtrack(csp,assigment,cant_tareas):
 
 
 def iscomplete(assigment,cant_tareas):
-    if len(assigment['values'])==cant_tareas:
+
+    if len(assigment['variables'])==cant_tareas:
+
         return True
+
     return False
 
 #Heuristicas globales
@@ -52,14 +55,7 @@ def select_unassignedvariable(csp):
         cant_rest=[]
         for var in variableMRV:
 
-            it=0
-
-            for constraint in csp.C:
-
-                if var in constraint['alcance']:
-                    it+=1
-
-            cant_rest.append(it)
+            cant_rest.append(len(csp.C[str(var)]))
 
         ind=cant_rest.index(max(cant_rest))
 
@@ -75,14 +71,14 @@ def order_domain_values(var,csp):
     aux1=0
     aux3=[]
     u=[]
+
     for x in aux:
 
         aux2=0
 
-        for constraint in csp.C:
+        for k in csp.C[str(var)].key():
                 
-                if var in constraint['alcance']:
-                    aux2+=len(constraint['Relacion'][str(x)])
+            aux2+=len(csp.C[str(var)][k][str(x)] )
 
         if aux2>aux1:
             aux1=aux2

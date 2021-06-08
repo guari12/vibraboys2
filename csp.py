@@ -43,16 +43,15 @@ class grafo_csp():
             X1 = self.X[i]
             keyA = X1["Tarea"] # id de la tarea
             # diccionario vacio para agregar la sig tarea
-
+            Bij={} 
             for j in range(len(self.X)): # para cada TSMi analizo TSMj
                 if i!=j:
                     #print(f"Restricciones: {i}-{j}")
                     X2 = self.X[j]
                     keyB = X2["Tarea"] # id de la tarea
-                    
+                     
                     if self.tareas[i]["M"]==self.tareas[j]["M"]:
-                        self.C.update({ keyA:{   keyB:  {}    } })
-                                                       #Cij
+                                                     #Cij
                         Cij = {}
 
                         Dominio1 = self.D[i]["Dominio"]
@@ -79,7 +78,9 @@ class grafo_csp():
                             # sino, no agregar nada para ese valor 1 porque no tiene valores para la otra tarea
 
                         if len(Cij)>0: # hay restricciones, agregar valores validos
-                            self.C[keyA][keyB].update(Cij) # lista de valores posibles en la tarea B
+                            Bij.update({keyB:Cij})
+            if len(Bij)>0:               
+                self.C.update({keyA:Bij}) # lista de valores posibles en la tarea B
     
     #funcion que setea el dominio temporal entre tareas
     def set_dominio(self,tareas,ids_maquinas,cant_maquinas):
