@@ -11,10 +11,9 @@ class grafo_csp():
         self.tareas=tareas
         self.maquinas=maquinas
 
-        print("-- Creando Variables y Dominios")
         for i in range(len(tareas)):
 
-            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None}
+            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None,'D':self.tareas[i]['D']}
 
             dom=[]
             
@@ -31,7 +30,6 @@ class grafo_csp():
             
         self.constraint() # crear las restricciones
         
-        print("---> Grafo creado!!")
 
     def constraint(self):
         print("--- Creando restricciones")

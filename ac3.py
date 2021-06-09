@@ -1,6 +1,6 @@
 from csp import grafo_csp
 
-def ac3(csp): #receive binary CSP (X,D,C)
+def ac3(csp,it=3): #receive binary CSP (X,D,C)
     queue = csp.getArcos() # cola de arcos, inicialmente los arcos en el csp
             # []
     while len(queue)>0:
@@ -19,11 +19,13 @@ def revise(csp,Xi,Xj):
     I = Xi
     J = Xj
     revised = False
-    for x in csp.D[I]["Dominio"]: # (m1,1)....,(m3,1)... para Xi
+    aux1=csp.D[I]["Dominio"].copy()
+    for x in aux1: # (m1,1)....,(m3,1)... para Xi
         
         # Existe algun y talque (x,y) satisfacen restricciones entre (Xi,Xj) ===========
         hay_y = False
-        for y in csp.D[J]["Dominio"]: # (m3,1)....,(m4,1)... para Xj
+        aux2=csp.D[J]["Dominio"].copy()
+        for y in aux2: # (m3,1)....,(m4,1)... para Xj
             # si x,y satisfacen las restricciones de Xi, Xj
             restricciones = csp.C[Xi][Xj][str(x)]
             for solucion in restricciones:
