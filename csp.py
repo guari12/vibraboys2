@@ -89,6 +89,17 @@ class grafo_csp():
         return arcos
     
     #funcion que setea el dominio temporal entre tareas
+    def copyX(self):
+        x = []
+        for elem in self.X:
+            x.append(elem.copy())
+        return x
     
+    def copyD(self):
+        d = []
+        for elem in self.D:
+            d.append(elem.copy())
+        return d
+
     def __str__(self):
         return "Variables:\n%s\nDominio temporal:\n%s\nRestricciones:\n%s\n" % (self.X, self.D,self.C)

@@ -56,7 +56,7 @@ Grafo1 = grafo_csp(tareas,DominioTs,maquinas)
 # for i in range(len(tareas)):
 #     for j in range(i+1,len(tareas)):
 #         print(f"Cantidad restricciones entre {i}/{j}: {len(Grafo1.C[i][j])}")
-assigment={'variables':[],'values':[],'inferences':{'X':[],'Dominio':[]}}
+assigment={'variables':[],'values':[],'inferences':[]}
 backtrack(Grafo1,assigment,cant_tareas)
 print("Fin")
 # Variables: ====================================================
