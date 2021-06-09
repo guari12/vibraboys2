@@ -7,7 +7,7 @@ def ac3(csp,it=3): #receive binary CSP (X,D,C)
         i,j = queue.pop(0) # saco el primer elemento
         # son ids i,j
         if revise(csp,i,j):
-            if len(csp.D[i])==0:
+            if len(csp.D[i]['Dominio'])==0:
                 return False
             for k in csp.C[i]: #
                 if k != j:

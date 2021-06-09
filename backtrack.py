@@ -7,9 +7,9 @@ def backtrack(csp,assigment,cant_tareas): # rellena las variables
 
     var=select_unassignedvariable(csp) # selecciona las variables no asignadas
     assigment['variables'].append(var) # las carga en assignment
-    valuelist=order_domain_values(var,csp) # 
+    valuelist=csp.D[var]#order_domain_values(var,csp) # 
 
-    for value in valuelist:
+    for value in valuelist["Dominio"]:
         
         if isconsistent(value,csp,assigment):
             assigment['values'].append(value)
@@ -27,8 +27,8 @@ def backtrack(csp,assigment,cant_tareas): # rellena las variables
             inf = assigment['inferences'].pop(-1)
             auxX=inf["X"]
             auxD=inf["Dominio"]
-            csp.X=auxX
-            csp.D=auxD
+            csp.X=auxX.copy()
+            csp.D=auxD.copy()
     assigment['variables'].pop(-1)
     return None
 
