@@ -98,7 +98,8 @@ class grafo_csp():
     def copyD(self):
         d = []
         for elem in self.D:
-            d.append(elem.copy())
+            key = list(elem.keys())
+            d.append({key[0]:elem[key[0]],key[1]:elem[key[1]].copy()})
         return d
 
     def __str__(self):

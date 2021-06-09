@@ -48,7 +48,7 @@ for i in range(cant_tareas):
     tiempo_max+=tareas[i]['D']+1
 
 DominioTs=[] # Dominio de tiempos
-for i in range(tiempo_max):
+for i in range(tiempo_max+1):
     DominioTs.append(i)
 
 # Ya tengo maquinas, tareas y tiempo_max (DominioTs)

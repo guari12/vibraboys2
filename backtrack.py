@@ -27,8 +27,8 @@ def backtrack(csp,assigment,cant_tareas): # rellena las variables
             inf = assigment['inferences'].pop(-1)
             auxX=inf["X"]
             auxD=inf["Dominio"]
-            csp.X=auxX
-            csp.D=auxD
+            csp.X=auxX.copy()
+            csp.D=auxD.copy()
     assigment['variables'].pop(-1)
     return None
 
