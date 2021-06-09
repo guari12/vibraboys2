@@ -21,8 +21,13 @@ from csp import grafo_csp
 
 
 
+<<<<<<< HEAD
 cant_maquinas=1
+cant_tareas=5
+=======
+cant_maquinas=10
 cant_tareas=20
+>>>>>>> 35ccec6120d83d33b14e5bc77543546fe6ceb143
 max_duracionTarea=5 #min
 
 # Maquinas de las tareas
@@ -45,10 +50,10 @@ tareas=[{'id':i,"T":f"Tarea_{i}",'M':maquinas[randint(0,len(maquinas)-1)]["tipo"
 # Tiempos
 tiempo_max=0
 for i in range(cant_tareas):
-    tiempo_max+=tareas[i]['D']
+    tiempo_max+=tareas[i]['D']+1
 
 DominioTs=[] # Dominio de tiempos
-for i in range(tiempo_max):
+for i in range(tiempo_max+1):
     DominioTs.append(i)
 
 # Ya tengo maquinas, tareas y tiempo_max (DominioTs)
@@ -57,7 +62,19 @@ Grafo1 = grafo_csp(tareas,DominioTs,maquinas)
 #     for j in range(i+1,len(tareas)):
 #         print(f"Cantidad restricciones entre {i}/{j}: {len(Grafo1.C[i][j])}")
 assigment={'variables':[],'values':[],'inferences':[]}
-backtrack(Grafo1,assigment,cant_tareas)
+solucion = backtrack(Grafo1,assigment,cant_tareas)
+
+print("\nLista de Tareas: ====================")
+for tarea in tareas:
+    print(f"   {tarea['id']}  \t{tarea['M']}")
+
+print("\nLista de Maquinas: ==================")
+for maquina in maquinas:
+    print(f"   {maquina['id']}   \t{maquina['tipo']}")
+
+print("\nSolucion: ===========================")
+for i in range(len(solucion["variables"])):
+    print("Tarea:",solucion["variables"][i],"\tValor:",solucion["values"][i],"\tDuracion:",tareas[solucion["variables"][i]]["D"]+1)
 print("Fin")
 # Variables: ====================================================
 # TSi: periodo en que se inicia la tarea (num entero de periodos ej horas)
