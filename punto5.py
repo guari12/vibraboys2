@@ -21,13 +21,8 @@ from csp import grafo_csp
 
 
 
-<<<<<<< HEAD
-cant_maquinas=1
-cant_tareas=5
-=======
 cant_maquinas=10
 cant_tareas=20
->>>>>>> 35ccec6120d83d33b14e5bc77543546fe6ceb143
 max_duracionTarea=5 #min
 
 # Maquinas de las tareas
