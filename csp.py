@@ -11,10 +11,9 @@ class grafo_csp():
         self.tareas=tareas
         self.maquinas=maquinas
 
-        print("-- Creando Variables y Dominios")
         for i in range(len(tareas)):
 
-            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None}
+            TSM={"Tarea":self.tareas[i]['id'],'Maquina':None,'PeriodoInicio':None,'PeriodoFin':None,'D':self.tareas[i]['D']}
 
             dom=[]
             
@@ -31,7 +30,6 @@ class grafo_csp():
             
         self.constraint() # crear las restricciones
         
-        print("---> Grafo creado!!")
 
     def constraint(self):
         print("--- Creando restricciones")
@@ -91,6 +89,17 @@ class grafo_csp():
         return arcos
     
     #funcion que setea el dominio temporal entre tareas
+    def copyX(self):
+        x = []
+        for elem in self.X:
+            x.append(elem.copy())
+        return x
     
+    def copyD(self):
+        d = []
+        for elem in self.D:
+            d.append(elem.copy())
+        return d
+
     def __str__(self):
         return "Variables:\n%s\nDominio temporal:\n%s\nRestricciones:\n%s\n" % (self.X, self.D,self.C)

@@ -1,32 +1,41 @@
+from ac3 import ac3
 
-def backtrack(csp,assigment,cant_tareas):
+def backtrack(csp,assigment,cant_tareas): # rellena las variables
 
-    if iscomplete(assigment,cant_tareas):
+    if iscomplete(assigment,csp):
         return assigment
 
-    var=select_unassignedvariable(csp)
-    assigment['variable'].append(var)
-    valuelist=order_domain_values(var,csp)
+    var=select_unassignedvariable(csp) # selecciona las variables no asignadas
+    assigment['variables'].append(var) # las carga en assignment
+    valuelist=csp.D[var]#order_domain_values(var,csp) # 
 
-    for value in valuelist:
-
+    for value in valuelist["Dominio"]:
+        
         if isconsistent(value,csp,assigment):
-            bool_inference,var_inference=inference(csp,var,value)
+            assigment['values'].append(value)
+            bool_inference=inference(csp,assigment)
+
             if bool_inference:
-                assigment['values'].append(value)
-                assigment['inferences'].append(var_inference)
-                bool_result,result=backtrack(csp,assigment)
-                if bool_result:
+
+                result=backtrack(csp,assigment,cant_tareas)
+
+                if result!=None:
+                
                     return result
-                assigment['values'].pop(-1)
-                csp.D=assigment['inferences'].pop(-1)
 
-    return False
+            assigment['values'].pop(-1)
+            inf = assigment['inferences'].pop(-1)
+            auxX=inf["X"]
+            auxD=inf["Dominio"]
+            csp.X=auxX
+            csp.D=auxD
+    assigment['variables'].pop(-1)
+    return None
 
 
-def iscomplete(assigment,cant_tareas):
+def iscomplete(assigment,csp):
 
-    if len(assigment['variables'])==cant_tareas:
+    if len(assigment['variables'])==len(csp.C.keys()): # verifica que se hayan asignado todas las variables
 
         return True
 
@@ -35,36 +44,43 @@ def iscomplete(assigment,cant_tareas):
 #Heuristicas globales
 def select_unassignedvariable(csp):
 
-    #En primer lugar elegimos la heuristica MRV
+    #En primer lugar elegimos la heuristica MRV, ordena las variables mas restringidas primero
     aux=10e4
-
+    variableMRV=[]
+    aux2=0
     for dom in csp.D:
 
-        if len(dom['Dominio'])<aux:
+        if dom['Tarea'] in csp.C.keys():
+            if len(dom['Dominio'])>1:
+                if len(dom['Dominio'])<aux:
 
-            aux=len(dom['Dominio'])
-            variableMRV=dom['id']
+                    aux=len(dom['Dominio'])
+                    aux2=dom['Tarea']
 
-        if dom == aux:
+    variableMRV.append(aux2)
 
-            variableMRV.extend(dom['id'])
-
+    for dom in csp.D:
+        if dom['Tarea'] in csp.C.keys():
+            if len(dom['Dominio'])>1:
+                if dom['Tarea']!=aux2:
+                    if len(dom['Dominio'])==aux:
+                        variableMRV.append(dom['Tarea'])
+        
     #Si hay mas de dos variables MRV se desempata de acuerdo a la Variable más restrictiva
-    if len(variableMRV):
+    if len(variableMRV)>0:
 
         cant_rest=[]
         for var in variableMRV:
+            if var in csp.C.keys():
+                cant_rest.append(len(csp.C[var]))
 
-            cant_rest.append(len(csp.C[str(var)]))
-
-        ind=cant_rest.index(max(cant_rest))
-
-        return variableMRV[ind]
+        if len(cant_rest)>0:
+            ind=cant_rest.index(max(cant_rest))
+            return variableMRV[ind]
 
     return variableMRV[0]
 
-
-def order_domain_values(var,csp):
+def order_domain_values(var,csp): # ordena primero el valor menos restrictivo
 
     aux=csp.D[var]['Dominio']
 
@@ -76,9 +92,9 @@ def order_domain_values(var,csp):
 
         aux2=0
 
-        for k in csp.C[str(var)].key():
+        for k in csp.C[var].keys():
                 
-            aux2+=len(csp.C[str(var)][k][str(x)] )
+            aux2+=len( csp.C[var][k][str(x)] )
 
         if aux2>aux1:
             aux1=aux2
@@ -93,13 +109,19 @@ def order_domain_values(var,csp):
 
 def isconsistent(value,csp,assigment):
     
-    if value in csp.D[assigment['variable'][-1]]["Dominio"]:
-
+    if value in csp.D[assigment['variables'][-1]]['Dominio']:
         return True
 
     return False
 
-def inference(csp,var,value):
+def inference(csp,assigment):
+    
+    assigment['inferences'].append( {   "X":csp.copyX(),
+                                        "Dominio":csp.copyD()  } )
 
-
-    pass
+    csp.X[assigment['variables'][-1]]['PeriodoInicio']=assigment['values'][-1]['S']
+    csp.X[assigment['variables'][-1]]['Maquina']=assigment['values'][-1]['M']
+    csp.X[assigment['variables'][-1]]['PeriodoFin']=assigment['values'][-1]['S']+csp.X[assigment['variables'][-1]]['D']
+    csp.D[assigment['variables'][-1]]['Dominio']=[assigment['values'][-1]]
+    return ac3(csp)
+    
