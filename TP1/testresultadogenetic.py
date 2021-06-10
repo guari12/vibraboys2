@@ -22,7 +22,7 @@ cache = Cache(almacen2)
 
 #Parametros del modelo
 len_enfria=2000  #Longitud de la ley de enfriamiento
-coef_exp=1.05    #Coef de caida exponelcia de la temperatura
+coef_exp=1.01    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
 
 T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
@@ -38,7 +38,7 @@ time_ini=time.time()
 #                                       Orden del almacen por defecto
 #===========================================================================================
 
-temple=anneling(cache,T,almacen2.obstaculos,2)
+temple=anneling(cache,T)
 for order in list_order:
 
     #Se busca las coordenadas de estos puntos en el layout
@@ -117,7 +117,7 @@ almacen2.cargarProductos(best_individuo)
 E2=np.zeros((len_enfria))
 list_E2=[]
 #Se realiza el temple orden por orden
-temple=anneling(cache,T,almacen2.obstaculos,2)
+temple=anneling(cache,T)
 for order in list_order:
 
     #Se busca las coordenadas de estos puntos en el layout

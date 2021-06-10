@@ -12,6 +12,7 @@ def backtrack(csp,assigment,cant_tareas): # rellena las variables
     for value in valuelist["Dominio"]:
         
         if isconsistent(value,csp,assigment):
+            
             assigment['values'].append(value)
             bool_inference=inference(csp,assigment)
 
@@ -29,7 +30,9 @@ def backtrack(csp,assigment,cant_tareas): # rellena las variables
             auxD=inf["Dominio"]
             csp.X=auxX.copy()
             csp.D=auxD.copy()
+
     assigment['variables'].pop(-1)
+
     return None
 
 
@@ -116,12 +119,12 @@ def isconsistent(value,csp,assigment):
 
 def inference(csp,assigment):
     
-    assigment['inferences'].append( {   "X":csp.copyX(),
-                                        "Dominio":csp.copyD()  } )
+    assigment['inferences'].append( {"X":csp.copyX(), "Dominio":csp.copyD()} )
 
     csp.X[assigment['variables'][-1]]['PeriodoInicio']=assigment['values'][-1]['S']
     csp.X[assigment['variables'][-1]]['Maquina']=assigment['values'][-1]['M']
     csp.X[assigment['variables'][-1]]['PeriodoFin']=assigment['values'][-1]['S']+csp.X[assigment['variables'][-1]]['D']
     csp.D[assigment['variables'][-1]]['Dominio']=[assigment['values'][-1]]
+
     return ac3(csp)
     
