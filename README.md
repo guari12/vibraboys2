@@ -1,5 +1,5 @@
 # Grupo 5
 
-1. Renzo Guarise 12262
-2. Lucas Trubiano 12289
-3. Franco Campanella 12125
+1. __Renzo Guarise__ - 12262
+2. __Lucas Trubiano__ - 12289
+3. __Franco Campanella__ - 12125
