@@ -102,5 +102,4 @@ class grafo_csp():
             d.append({key[0]:elem[key[0]],key[1]:elem[key[1]].copy()})
         return d
 
-    def __str__(self):
-        return "Variables:\n%s\nDominio temporal:\n%s\nRestricciones:\n%s\n" % (self.X, self.D,self.C)
+
