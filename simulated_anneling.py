@@ -4,12 +4,11 @@ import math
 
 class anneling(): 
 
-    def __init__(self,cache,_T,_spatialdimension):
+    def __init__(self,cache,_T):
         
         self.cache = cache
         self.T=_T
         self.t=len(_T)
-        self.ds=_spatialdimension
         self.it=0
 
     def next_state(self):

@@ -13,7 +13,7 @@ from cache import Cache
 
 
 #Parametros del modelo
-len_enfria=300  #Longitud de la ley de enfriamiento
+len_enfria=3000  #Longitud de la ley de enfriamiento
 coef_exp=1.1    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
 cant_ordenes=100  #Cantidad de ordenes
@@ -41,7 +41,7 @@ T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 time_ini=time.time()
 
 #Se realiza el temple orden por orden
-temple=anneling(cache,T,2)
+temple=anneling(cache,T)
 for order in list_order:
 
     #Se busca las coordenadas de estos puntos en el layout
