@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from simulated_anneling import anneling
-import time
+
 
 
 class genetic():
@@ -15,7 +15,7 @@ class genetic():
         self.list_fit=[0]
         self.prob_mutacion=0.1
         self.T=_T   #Agenda de enfriamiento
-        self.temple=anneling(self.cache,self.T,2)
+        self.temple=anneling(self.cache,self.T)
         self.cant_iter=200
         
 
@@ -158,8 +158,6 @@ class genetic():
             self.list_fit.append(self.fitness(invididuo))
             dictor[self.list_fit[-1]]=it
 
-            it+=1     
-            print(it)   
 
         #Ordena los fitness de menor a mayor
         self.list_fit.sort()
@@ -197,7 +195,6 @@ class genetic():
 
         while iterar:
 
-            tim_init=time.time()
             #Se guarda el ultimo mejor fitness
             fit_plob_ant=self.list_fit[0]
             #Obtiene los mejores individuos
@@ -208,18 +205,15 @@ class genetic():
             self.cross_over()
             #Se realiza la mutacion
             self.mutacion()
-            tim=time.time()-tim_init
-            print(it,'\n')
-            print(tim)
-            it+=1
+
 
             #Se verifica si se cumplio el numero max de it
             if it>=self.cant_iter:
                 iterar=False
 
             #Se verifica si hay una convergencia en los fitness
-            # if abs(fit_plob_ant-self.list_fit[0])<0.001:
-            #     iterar=False
+            if abs(fit_plob_ant-self.list_fit[0])<0.001:
+                iterar=False
 
         return self.poblacion_best[0],self.list_fitbest
         

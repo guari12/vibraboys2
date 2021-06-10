@@ -42,7 +42,7 @@ print(best_individuo)
 print(list_fit)
 
 plt.figure(1)
-plt.xlabel("Fitness")
-plt.ylabel("it")
+plt.xlabel("it")
+plt.ylabel("Fitness")
 plt.plot(np.linspace(0,(len(list_fit)-1),len(list_fit)),list_fit)
 

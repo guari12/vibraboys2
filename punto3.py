@@ -5,7 +5,6 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-import time
 
 from simulated_anneling import anneling, ley_enfriamiento
 from LayoutAlmacen import Almacen,mapa
@@ -38,8 +37,6 @@ list_order=[aux for i in range(cant_ordenes) ]
 T=ley_enfriamiento(tem_max,len_enfria,coef_exp)
 
 
-time_ini=time.time()
-
 #Se realiza el temple orden por orden
 temple=anneling(cache,T)
 for order in list_order:
@@ -50,9 +47,6 @@ for order in list_order:
     #Se realiza el temple
     
     E=temple.search(ordenesPosiciones,empiezaEN,terminaEN)
-    
-    tim=time.time()-time_ini
-    print(tim)
 
     #Lista de energias finales
     list_E2.append(E[-1])
