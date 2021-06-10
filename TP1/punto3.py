@@ -13,7 +13,7 @@ from cache import Cache
 
 #Parametros del modelo
 len_enfria=3000  #Longitud de la ley de enfriamiento
-coef_exp=1.1    #Coef de caida exponelcia de la temperatura
+coef_exp=1.01    #Coef de caida exponelcia de la temperatura
 tem_max=5000    #Temperatur maxima
 cant_ordenes=100  #Cantidad de ordenes
 len_ordenes=20  #Longitud de ordenes
