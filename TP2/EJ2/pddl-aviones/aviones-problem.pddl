@@ -53,10 +53,10 @@
     )
     (:goal 
         (and
-            (en FERTILIZANTE SFN)
-            (en TELA-GRANIZO MDZ)
-            (en COSECHADORA COR)
-            (en AUTOPARTES AEP)
+            (en FERTILIZANTE SFN); MDZ
+            (en TELA-GRANIZO MDZ); COR
+            (en COSECHADORA COR); AEP
+            (en AUTOPARTES AEP); SFN
         )
     )
 )
