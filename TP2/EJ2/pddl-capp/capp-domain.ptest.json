@@ -1,0 +1,9 @@
+{
+  "defaultDomain": "capp-domain.pddl",
+  "defaultOptions": "",
+  "cases": [
+    {
+      "problem": "capp-problem.pddl"
+    }
+  ]
+}
