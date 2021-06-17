@@ -1,7 +1,0 @@
-
-Dirigirse a la carpeta donde esta el Fast-Downward:
->>
-cd '/Volumes/HDD 500/PROYECTOS/repos git/vibraboys2/TP2/EJ2'
-
-Ejemplo de como se resuelve:
->> ./fast-downward.py domain.pddl problem.pddl --search "lazy_greedy([ff()], preferred=[ff()])"
