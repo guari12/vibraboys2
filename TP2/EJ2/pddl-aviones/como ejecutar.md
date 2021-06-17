@@ -56,3 +56,8 @@ Ejemplo de como resolver con A estrella:
 # 5. Para ver el plan encontrado ejecutar:
 Ejecutar por consola el siguiente comando que muestra el plan encontrado:
 > cat sas_plan
+
+#
+# 6. Config
+Pddl Search Debugger: Planner Command Line
+> --search-tree-dump=http://localhost:$(port)
