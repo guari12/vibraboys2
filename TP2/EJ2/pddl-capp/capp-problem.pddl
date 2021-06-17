@@ -1,12 +1,12 @@
 (define (problem capp-pieza)
     (:domain capp)
     (:objects 
-        orientacion+x
-        orientacion+y
-        orientacion+z
-        orientacion-x
-        orientacion-y
-        orientacion-z
+        orientacionX
+        orientacionY
+        orientacionZ
+        orientacion-X
+        orientacion-Y
+        orientacion-Z
         s2
         s4
         s6
@@ -20,12 +20,12 @@
         torneado
     )
     (:init 
-        (orientacion orientacion+x)
-        (orientacion orientacion+y)
-        (orientacion orientacion+z)
-        (orientacion orientacion-x)
-        (orientacion orientacion-y)
-        (orientacion orientacion-z)
+        (orientacion orientacionX)
+        (orientacion orientacionY)
+        (orientacion orientacionZ)
+        (orientacion orientacion-X)
+        (orientacion orientacion-Y)
+        (orientacion orientacion-Z)
         (feature s2)
         (feature s4)
         (feature s6)
@@ -42,12 +42,12 @@
         (feature-tipo s6 slot)
         (feature-tipo s9 slot)
         (feature-tipo s10 slot)
-        (orientacion-pieza orientacion-x)
-        (orientacion-feature s2 orientacion+x)
-        (orientacion-feature s4 orientacion-x)
-        (orientacion-feature s6 orientacion+x)
-        (orientacion-feature s9 orientacion+z)
-        (orientacion-feature s10 orientacion+z)
+        (orientacion-pieza orientacion-X)
+        (orientacion-feature s2 orientacionX)
+        (orientacion-feature s4 orientacion-X)
+        (orientacion-feature s6 orientacionX)
+        (orientacion-feature s9 orientacionZ)
+        (orientacion-feature s10 orientacionZ)
         (fabricable slot fresado)
     )
     (:goal 
