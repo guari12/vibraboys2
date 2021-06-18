@@ -1,54 +1,66 @@
 /*Verificacion de la evacuacion continua de gas*/
 verificar(piloto) :- 
-    estado(piloto, ok), writeln('Todo OK').
-
-verificar(piloto) :- 
-                estado(piloto, desconocido), 
-                ((estado(leakage_prevention_between_sit_and_orifice, ok), writeln('Verificar Pilot'));
-                verificar(leakage_prevention_between_sit_and_orifice)).
+    (
+        (estado(piloto, desconocido), estado(leakage_prevention_between_sit_and_orifice, yes), writeln('Verificar Pilot'));
+        (estado(piloto, yes), writeln('Set the valve acording to the instructions'));
+        (estado(piloto, no), writeln('Make a full service and reinstall it'));
+        verificar(leakage_prevention_between_sit_and_orifice)
+    ).
 
 verificar(leakage_prevention_between_sit_and_orifice) :- 
-                estado(leakage_prevention_between_sit_and_orifice, desconocido), 
-                ((estado(safety_valve_spring, ok), writeln('Verificar leakage prevention between sit and orifice')); 
-                verificar(safety_valve_spring)).
+        (
+            (estado(leakage_prevention_between_sit_and_orifice, desconocido), estado(safety_valve_spring, yes), writeln('Verificar leakage prevention between sit and orifice'));
+            (estado(leakage_prevention_between_sit_and_orifice, no), writeln('Replace sit and orifice and put the safety valve into circuit'));
+            verificar(safety_valve_spring)
+        ).
 
 verificar(safety_valve_spring) :- 
-                estado(safety_valve_spring, desconocido), 
-                ((estado(control_valve_sensors_blocked, no), writeln('Verificar safety valve spring')); 
-                verificar(control_valve_sensors_blocked)).
+    (
+        (estado(safety_valve_spring, desconocido), estado(control_valve_sensors_blocked, no), writeln('Verificar safety valve spring')); 
+        (estado(safety_valve_spring, no), writeln('Put spring and safety valve in the service'));
+        verificar(control_valve_sensors_blocked)
+    ).
 
-verificar(control_valve_sensors_blocked) :- 
-                estado(control_valve_sensors_blocked, desconocido), 
-                ((estado(valve_status_closed, no), writeln('Verificar control valve sensors blocked')); 
-                verificar(valve_status_closed)).
-                
+verificar(control_valve_sensors_blocked) :-
+    (
+        (estado(control_valve_sensors_blocked, desconocido), estado(valve_status_closed, no), writeln('Verificar control valve sensors blocked'));
+        (estado(control_valve_sensors_blocked, yes), writeln('Clean and troubleshoot the sensing pipes')); 
+        verificar(valve_status_closed)
+    ). 
+        
 verificar(valve_status_closed) :- 
-                estado(valve_status_closed, desconocido),
-                ((estado(relief_valve_ok_with_10_percent_more_pressure, no), writeln('Verificar valve status "Close"'));
-                verificar(relief_valve_ok_with_10_percent_more_pressure)).
-                
+    (
+        (estado(valve_status_closed, desconocido), estado(relief_valve_ok_with_10_percent_more_pressure, no), writeln('Verificar valve status "Close"'));
+        (estado(valve_status_closed, yes), writeln('Place the safety valve in "Open"'));
+        verificar(relief_valve_ok_with_10_percent_more_pressure)
+    ).
+        
 verificar(relief_valve_ok_with_10_percent_more_pressure) :- 
-                estado(relief_valve_ok_with_10_percent_more_pressure, desconocido),
-                ((estado(safety_valve_has_continuous_evacuation, no), writeln('Verificar relief valve works correctly with +10% over regular pressure')); 
-                verificar(safety_valve_has_continuous_evacuation)).
-            
+    (
+        (estado(relief_valve_ok_with_10_percent_more_pressure, desconocido), estado(safety_valve_has_continuous_evacuation, no), writeln('Verificar si relief valve works correctly with +10% over regular pressure')); 
+        (estado(relief_valve_ok_with_10_percent_more_pressure, yes),  writeln('Safety function appropriate'));
+        verificar(safety_valve_has_continuous_evacuation)  
+    ).
+    
 verificar(safety_valve_has_continuous_evacuation) :- 
-                estado(safety_valve_has_continuous_evacuation, desconocido), 
-                writeln('Verificar safety valve has continuous evacuation').
+        (estado(safety_valve_has_continuous_evacuation, desconocido), writeln('Verificar the evacuation of safety valve')).
+    
 /*---------------------------------------------------------------------------------------------*/
 
 /*Verificacion del espesor de tubrias*/
 verificar(safety_system_having_dazzling_rusting_efects) :- 
-                estado(safety_system_having_dazzling_rusting_efects, desconocido), 
-                writeln('Verificar safety system dazzling and rusting efects').
+                (
+                    (estado(safety_system_having_dazzling_rusting_efects, desconocido), writeln('Verificar safety system dazzling and rusting efects'));
+                    (estado(safety_system_having_dazzling_rusting_efects, yes), writeln('Coordination is required in order to render and color the equipment'));
+                ). 
 
 verificar(thickness_less_than_limit) :-
-                estado(thickness_less_than_limit, ok), writeln('Thickness verified').
-
-verificar(thickness_less_than_limit) :-
-                estado(thickness_less_than_limit, desconocido), 
-                ((estado(safety_system_having_dazzling_rusting_efects, ok),writeln('Verificar system thickness'));
-                verificar(safety_system_having_dazzling_rusting_efects)).
+                (
+                    (estado(thickness_less_than_limit, desconocido), estado(safety_system_having_dazzling_rusting_efects, no),writeln('Verificar system thickness'));
+                    (estado(thickness_less_than_limit, yes), writeln('Please report to technical inspection unit'));
+                    (estado(thickness_less_than_limit, no), writeln('Equipment in good conticions'));
+                    verificar(safety_system_having_dazzling_rusting_efects)
+                ).
 /*---------------------------------------------------------------------------------------------*/
 
 
