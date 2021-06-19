@@ -72,7 +72,7 @@ class controlador():
             valornitido+=self.dict_FAM2[j]*a
             denominador+=self.dict_FAM2[j]
         if denominador!=0:
-            valornitido=valornitido/denominador
+            valornitido=-valornitido/denominador
             return valornitido
         else:
             return 0 
