@@ -1,55 +1,105 @@
 
-#Variable linguistica theta(angulo): dict={conjuntos borrosos,universo del discurso(Por comprension)}. Suponemos que el rango de los angulos que puede tomar es -45 a 45
+class controlador():
 
-theta={'NG':(-60,-20),'NP':(-40,0),'Z':(-20,20),'PP':(0,40),'PG':(20,60)}
-dtheta={'NG':(-15,-5),'NP':(-10,0),'Z':(-5,5),'PP':(0,10),'PG':(5,15)}
-conjuntos_borrosos=['NG','NP','Z','PP','PG']
-F={'NG':(-15,-5),'NP':(-10,0),'Z':(-5,5),'PP':(0,10),'PG':(5,15)}
+    def __init__(self):
+        #=======================Variables de entrada ========================================
+        #Variable linguistica theta(angulo): dict={conjuntos borrosos,universo del discurso(Por comprension)}.
+        self.theta={'NG':(-0.5,-0.25),'NP':(-0.5,0),'Z':(-0.25,0.25),'PP':(0,0.5),'PG':(0.25,0.75)}
 
-#FAM: (theta,dtheta,F) Contrareloj Positivo.
-FAM=[('NG','NG','PP'),('NG','NP','PP'),('NG','Z','PG'),('NG','PP','PG'),('NG','PG','PG'),
-('NP','NG','PP'),('NP','NP','Z'),('NP','Z','PP'),('NP','PP','PG'),('NP','PG','PG'),
-('Z','NG','Z'),('Z','NP','Z'),('Z','Z','Z'),('Z','PP','NP'),('Z','PG','NG'),
-('PP','NG','NG'),('PP','NP','NP'),('PP','Z','NP'),('PP','PP','Z'),('PP','PG','Z'),
-('PG','NG','NG'),('PG','NP','NG'),('PG','Z','NP'),('PG','PP','NG'),('PG','PG','NG')
-]
+        #Variable linguistica dtheta(Velocidad angular): dict={conjuntos borrosos,universo del discurso(Por comprension)}.
+        self.dtheta={'NG':(-3,-1),'NP':(-2,0),'Z':(-1,1),'PP':(0,2),'PG':(1,3)}
+    
+        #===================================================================================
 
-dict_FAM={}
-for j in conjuntos_borrosos:
-    for i in FAM:
-        FAM_C=[]
-        if i[3]==j:
-            FAM_C.append(i[:2])
-    dict_FAM[j]=FAM_C
+        #=======================Variables de salida ========================================
+        #Variable linguistica F(Fuerza): dict={conjuntos borrosos,universo del discurso(Por comprension)}.
+        self.F={'NG':(-150,-50),'NP':(-100,0),'Z':(-50,50),'PP':(0,100),'PG':(50,150)}
+        #===================================================================================
 
-xtheta_borrosa={}
-dxtheta_borrosa={}
+        #Lista de conjuntos borrosos
+        self.conjuntos_borrosos=['NG','NP','Z','PP','PG']
 
-def borrosificador(xtheta,xdtheta):
+        #Diccionaria que contiene los valores borrosos de las variables de entrada
+        self.xtheta_borrosa={}
+        self.dxtheta_borrosa={}
 
-    for i in conjuntos_borrosos:
-        xtheta_borrosa[i]=membership(theta[i][0],theta[i][1])
-        dxtheta_borrosa[i]=membership(dtheta[i][0],dtheta[i][1])
+        #FAM: (theta,dtheta,F) Base de conocimientos
+        self.FAM=[('NG','NG','PG'),('NG','NP','PG'),('NG','Z','PG'),('NG','PP','PP'),('NG','PG','PP'),
+        ('NP','NG','PG'),('NP','NP','PG'),('NP','Z','PP'),('NP','PP','PP'),('NP','PG','NP'),
+        ('Z','NG','PG'),('Z','NP','PP'),('Z','Z','Z'),('Z','PP','NP'),('Z','PG','NG'),
+        ('PP','NG','PG'),('PP','NP','PP'),('PP','Z','NP'),('PP','PP','NP'),('PP','PG','NG'),
+        ('PG','NG','PP'),('PG','NP','NP'),('PG','Z','NP'),('PG','PP','NG'),('PG','PG','NG')
+        ]
 
-dict_FAM2={}
+        #Busca reglas en la BK que tengan el mismo consecuente
+        self.dict_FAM={}
+        for j in self.conjuntos_borrosos:
+            FAM_C=[]
+            for i in self.FAM:
+                if i[2]==j:
+                    FAM_C.append(i[:2])
+            self.dict_FAM[j]=FAM_C
 
-def motordeinferencias(xtheta,xdtheta):
+        
 
-    borrosificador(xtheta,xdtheta)
+    def borrosificador(self,xtheta,xdtheta):
 
-    for j in conjuntos_borrosos:
-        list_aux=[]
-        for i in dict_FAM[j]:
-            aux1=xtheta_borrosa[i[0]]
-            aux2=xtheta_borrosa[i[1]]
-            list_aux.append(min(aux1,aux2))
-        dict_FAM2[j]=list_aux
+        for i in self.conjuntos_borrosos:
+            self.xtheta_borrosa[i]=self.membership(self.theta[i][0],self.theta[i][1],xtheta,i)
+            self.dxtheta_borrosa[i]=self.membership(self.dtheta[i][0],self.dtheta[i][1],xdtheta,i)
+
+    dict_FAM2={}
+
+    def motordeinferencias(self,xtheta,xdtheta):
+
+        self.borrosificador(xtheta,xdtheta)
+
+        for j in self.conjuntos_borrosos:
+            list_aux=[]
+            for i in self.dict_FAM[j]:
+                aux1=self.xtheta_borrosa[i[0]]
+                aux2=self.dxtheta_borrosa[i[1]]
+                list_aux.append(min(aux1,aux2))
+            self.dict_FAM2[j]=max(list_aux)
+        return self.desborrificador()
+
+    # Media de centros
+    def desborrificador(self): 
+        valornitido=0
+        denominador=0
+        for j in self.conjuntos_borrosos:
+            a=(self.F[j][0]+self.F[j][1])/2
+            valornitido+=self.dict_FAM2[j]*a
+            denominador+=self.dict_FAM2[j]
+        if denominador!=0:
+            valornitido=-valornitido/denominador
+            return valornitido
+        else:
+            return 0 
 
 
-def membership(a1,a3,X): #Me indica el grado de pertenencia de una variable a un conjunto borroso. Funcion triangular.
-    a2=(a3+a1)/2
-    if X>a2:
-        return 1-(1)/(a3-a2)*X
 
-    if X<a2:
-        return 1+(1)/(a2-a1)*X
+
+    def membership(self,a1,a3,X,i): #Me indica el grado de pertenencia de una variable a un conjunto borroso. Funcion triangular.
+        a2=(a3+a1)/2
+
+        if i=='NG':
+            if X<=a2:
+                return 1
+        if i=='PG':
+            if X>=a2:
+                return 1
+        if X>=a2:
+            aux1=(1)/(a2-a3)*(X-a2)+1
+            if aux1>0:
+                return aux1
+            else:
+                return 0
+        if X<a2:
+            aux2=(1)/(a2-a1)*(X-a2)+1
+            if aux2>0:
+                return aux2
+            else:
+                return 0
+
+
