@@ -114,7 +114,7 @@ verificar(leakage_fixed_with_wrench) :-
 
 /*==========================================================================*/
 verificar(sistema) :-
-    estado(sistema, desconocido), writeln('Analizando sistema...'), writeln(''), 
+    estado(sistema, desconocido), writeln('Analizando sistema...'), 
 	(   
     	verificar(thickness_less_than_limit)
     ).
