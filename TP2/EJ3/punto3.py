@@ -5,10 +5,10 @@ class controlador():
         #=======================Variables de entrada ========================================
         #Variable linguistica theta(angulo): dict={conjuntos borrosos,universo del discurso(Por comprension)}.
         self.theta={'NG':(-0.5,-0.25),'NP':(-0.5,0),'Z':(-0.25,0.25),'PP':(0,0.5),'PG':(0.25,0.75)}
-        self.limtheta=(-3,3)
+
         #Variable linguistica dtheta(Velocidad angular): dict={conjuntos borrosos,universo del discurso(Por comprension)}.
         self.dtheta={'NG':(-3,-1),'NP':(-2,0),'Z':(-1,1),'PP':(0,2),'PG':(1,3)}
-        self.limdtheta=(-6,6)
+    
         #===================================================================================
 
         #=======================Variables de salida ========================================
@@ -23,7 +23,7 @@ class controlador():
         self.xtheta_borrosa={}
         self.dxtheta_borrosa={}
 
-        #FAM: (theta,dtheta,F) Contrareloj Positivo. Base de conocimientos
+        #FAM: (theta,dtheta,F) Base de conocimientos
         self.FAM=[('NG','NG','PG'),('NG','NP','PG'),('NG','Z','PG'),('NG','PP','PP'),('NG','PG','PP'),
         ('NP','NG','PG'),('NP','NP','PG'),('NP','Z','PP'),('NP','PP','PP'),('NP','PG','NP'),
         ('Z','NG','PG'),('Z','NP','PP'),('Z','Z','Z'),('Z','PP','NP'),('Z','PG','NG'),
