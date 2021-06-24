@@ -40,8 +40,6 @@ class controlador():
                     FAM_C.append(i[:2])
             self.dict_FAM[j]=FAM_C
 
-        
-
     def borrosificador(self,xtheta,xdtheta):
 
         for i in self.conjuntos_borrosos:
@@ -77,9 +75,6 @@ class controlador():
         else:
             return 0 
 
-
-
-
     def membership(self,a1,a3,X,i): #Me indica el grado de pertenencia de una variable a un conjunto borroso. Funcion triangular.
         a2=(a3+a1)/2
 
@@ -101,5 +96,3 @@ class controlador():
                 return aux2
             else:
                 return 0
-
-

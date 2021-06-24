@@ -45,9 +45,13 @@ def simular(t_max, delta_t, theta_0, v_0, a_0):
   fig2, a = plt.subplots()
   fig2, a3 = plt.subplots()
   ax.plot(x, y)
+  ax.set_title('Theta')
   ay.plot(x, y2)
+  ay.set_title('Velocidad')
   a.plot(x,y3)
+  a.set_title('Aceleracion')
   a3.plot(x,f2)
+  a3.set_title('Fuerza')
   ax.set(xlabel='time (s)', ylabel='theta', title='Delta t = ' + str(delta_t) + " s")
   ax.grid()
   
