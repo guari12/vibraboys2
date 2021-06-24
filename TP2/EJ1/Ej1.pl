@@ -1,4 +1,5 @@
-/*Verificacion de la evacuacion continua de gas*/
+/*Verificacion de evacuacion discontinua de gas*/
+/*Rama izquierda del arbol de busqueda */
 verificar(piloto_ok) :-
     (
         (estado(piloto_ok, desconocido), estado(leakage_prevention_between_sit_and_orifice, yes), writeln('Verificar Pilot'));
@@ -41,10 +42,10 @@ verificar(relief_valve_ok_with_10_percent_more_pressure) :-
     (estado(relief_valve_ok_with_10_percent_more_pressure, yes),  writeln('Safety function appropriate'));
     verificar(safety_valve_has_continuous_evacuation)  
 ).
+/*-----------------------------------------------------------------------------------------------------------------------------*/
 
-verificar(safety_valve_has_continuous_evacuation) :- 
-    (estado(safety_valve_has_continuous_evacuation, desconocido), writeln('Verificar the evacuation of safety valve')).
-
+/*Verificacion de evacuacion continua de gas */
+/*Rama derecha del arbol de busqueda*/
 verificar(preventable_leakage_between_sit_and_orifice) :-
     (
         (estado(preventable_leakage_between_sit_and_orifice, desconocido), estado(safety_spring_ok, yes), writeln('Verificar if there is a preventable leakage'));  
@@ -70,15 +71,21 @@ verificar(line_gas_pressure_ok) :-
     (
         (estado(line_gas_pressure_ok, desconocido), estado(safety_valve_has_continuous_evacuation, yes), writeln('Verificar line gas pressure'));
         (estado(line_gas_pressure_ok, no), writeln('Please adjust the regulator acording to the instructions'));
-        verificar(safety_valve_has_continuous_evacuation)
+    	verificar(safety_valve_has_continuous_evacuation)
     ).
 /*---------------------------------------------------------------------------------------------*/
+
+verificar(safety_valve_has_continuous_evacuation) :- 
+    (
+        (estado(safety_valve_has_continuous_evacuation, desconocido), writeln('Verificar the evacuation of safety valve'))
+    ).
 
 /*Verificacion del espesor de tubrias*/
 verificar(safety_system_having_dazzling_rusting_efects) :- 
                 (
                     (estado(safety_system_having_dazzling_rusting_efects, desconocido), writeln('Verificar safety system dazzling and rusting efects'));
-                    (estado(safety_system_having_dazzling_rusting_efects, yes), writeln('Coordination is required in order to render and color the equipment'));
+                    (estado(safety_system_having_dazzling_rusting_efects, yes), writeln('Coordination is required in order to render and color the equipment'))
+                    /*verificar(piloto_ok)*/
                 ). 
 
 verificar(thickness_less_than_limit) :-
@@ -107,9 +114,19 @@ verificar(leakage_fixed_with_wrench) :-
                 ).
 /*---------------------------------------------------------------------------------------------*/
 
-/* Ground Facts de instancia variables (podrian resolverse mediante sensado o agregando la informacion interactivamente a la base de conocimientos) */
+/*Clausula de verificacion del sistema completo*/
+verificar(sistema) :-
+    estado(sistema, desconocido), writeln('Analizando sistema...'), 
+	(   
+    	verificar(thickness_less_than_limit), 
+    	verificar(leakage_fixed_with_wrench),
+    	verificar(piloto_ok);
+    	verificar(preventable_leakage_between_sit_and_orifice)
+    ).
+/*--------------------------------------------------------------------------------------------------*/
 
-/*Verificacion de la evacuacion continua de gas*/
+/* GROUND FACTS*/
+/*Verificacion de la evacuacion de gas*/
 estado(piloto_ok, desconocido).
 estado(sit_and_orifice_ok, desconocido).
 estado(safety_valve_spring_ok, desconocido).
@@ -131,6 +148,8 @@ estado(safety_system_having_dazzling_rusting_efects, desconocido).
 /*---------------------------------------------------------------------------------------------*/
 
 /*Verificacion de fugas de gas*/
-estado(gas_leakage_at_joint, desconocido).
+estado(gas_leakage_at_joint, no).
 estado(leakage_fixed_with_wrench, desconocido).
 /*---------------------------------------------------------------------------------------------*/
+
+estado(sistema, desconocido).
