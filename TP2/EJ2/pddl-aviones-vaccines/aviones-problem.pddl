@@ -1,4 +1,11 @@
 ; Online-Solver: http://lcas.lincoln.ac.uk/fast-downward/
+; ^__ No anduvo!!
+
+; Por consola:
+; cd TP2/EJ2
+; A_estrella: ./downward/fast-downward.py pddl-aviones-vaccines/aviones-domain.pddl pddl-aviones-vaccines/aviones-problem.pddl --search "astar(lmcut())"
+; Default: ./downward/fast-downward.py pddl-aviones-vaccines/aviones-domain.pddl pddl-aviones-vaccines/aviones-problem.pddl --search "lazy_greedy([ff()], preferred=[ff()])"
+; Ver plan: cat sas_plan
 
 (define (problem carga-aerea)
     (:domain aviones)
@@ -76,11 +83,11 @@
     )
     (:goal 
         (and
-            (en ASTRAZENECA ARG); MDZ
+            (en ASTRAZENECA ARG)
             (en SINOPHARM ARG)
             (en SPUTNIK-V ARG)
             (en COVISHIELD ARG)
-            
+
             (en PFIZER ESP)
             (en MODERNA ESP)
         )
