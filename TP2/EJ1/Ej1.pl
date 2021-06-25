@@ -1,45 +1,45 @@
 /*Verificacion de evacuacion discontinua de gas*/
 /*Rama izquierda del arbol de busqueda */
-verificar(piloto_ok) :-
+verificar(pilot_ok) :-
     (
-        (estado(piloto_ok, desconocido), estado(leakage_prevention_between_sit_and_orifice, yes), writeln('Verificar Pilot'));
-        (estado(piloto_ok, yes), writeln('Set the valve acording to the instructions'));
-        (estado(piloto_ok, no), writeln('Make a full service and reinstall it'));
+        (estado(pilot_ok, desconocido), estado(sit_and_orifice_ok, yes), writeln('Verificar Pilot'));
+        (estado(pilot_ok, yes), writeln('Sistem ok, set the safety valve acording to the instructions'));
+        (estado(pilot_ok, no), writeln('Make a full service and reinstall it'));
         verificar(sit_and_orifice_ok)
     ).
 
 verificar(sit_and_orifice_ok) :-
     (
-        (estado(sit_and_orifice_ok, desconocido), estado(safety_valve_spring_ok, yes), writeln('Verificar leakage prevention between sit and orifice'));
+        (estado(sit_and_orifice_ok, desconocido), estado(efficiency_of_safety_valve_spring, E), E>=70, writeln('Verificar leakage prevention between sit and orifice'));
         (estado(sit_and_orifice_ok, no), writeln('Replace sit and orifice and put the safety valve into circuit'));
-        verificar(safety_valve_spring_ok)
+        verificar(efficiency_of_safety_valve_spring)
     ).
 
-verificar(safety_valve_spring_ok) :-
+verificar(efficiency_of_safety_valve_spring) :-
 (
-    (estado(safety_valve_spring_ok, desconocido), estado(control_valve_sensors_blocked, no), writeln('Verificar safety valve spring'));
-    (estado(safety_valve_spring_ok, no), writeln('Put spring and safety valve in service'));
-    verificar(control_valve_sensors_blocked)
+    (estado(efficiency_of_safety_valve_spring, E), E==(-1), estado(control_valve_sensors, Tension), Tension>=5, Tension=<12, writeln('Verificar safety valve spring efficiency'));
+    (estado(efficiency_of_safety_valve_spring, E), E<70, E>=0, writeln('Low efficiency: put spring and safety valve in service'));
+    verificar(control_valve_sensors)
 ).
 
-verificar(control_valve_sensors_blocked) :-
+verificar(control_valve_sensors) :-
 (
-    (estado(control_valve_sensors_blocked, desconocido), estado(valve_status_closed, no), writeln('Verificar control valve sensors'));
-    (estado(control_valve_sensors_blocked, yes), writeln('Clean and troubleshoot the sensing pipes'));
-    verificar(valve_status_closed)
+    (estado(control_valve_sensors, Tension), Tension==(-1), estado(valve_status, opened), writeln('Verificar control valve sensors'));
+    (estado(control_valve_sensors, Tension), Tension<5, Tension>0, writeln('Low voltage: troubleshoot the sensing pipes'));
+    verificar(valve_status)
 ).
     
-verificar(valve_status_closed) :- 
+verificar(valve_status) :- 
 (
-    (estado(valve_status_closed, desconocido), estado(relief_valve_ok_with_10_percent_more_pressure, no), writeln('Verificar valve status "Close"'));
-    (estado(valve_status_closed, yes), writeln('Place the safety valve in "Open"'));
-    verificar(relief_valve_ok_with_10_percent_more_pressure)
+    (estado(valve_status, desconocido), estado(pressure_of_the_relief_valve, P), regulating_pressure(RP), P<(RP+(RP*(10/100))), P>0, writeln('Verificar valve status'));
+    (estado(valve_status, closed), writeln('Place the safety valve in "Open"'));
+    verificar(pressure_of_the_relief_valve)
 ).
     
-verificar(relief_valve_ok_with_10_percent_more_pressure) :- 
+verificar(pressure_of_the_relief_valve) :- 
 (
-    (estado(relief_valve_ok_with_10_percent_more_pressure, desconocido), estado(safety_valve_has_continuous_evacuation, no), writeln('Verificar si relief valve works correctly with +10% over regular pressure')); 
-    (estado(relief_valve_ok_with_10_percent_more_pressure, yes),  writeln('Safety function appropriate'));
+    (estado(pressure_of_the_relief_valve, P), P==(-1), estado(safety_valve_has_continuous_evacuation, no), writeln('Verificar si relief valve works correctly with +10% over regular pressure')); 
+    (estado(pressure_of_the_relief_valve, P), regulating_pressure(RP), P>=(RP+(RP*(10/100))), P<(RP+(RP*(30/100))), writeln('Safety function appropriate'));
     verificar(safety_valve_has_continuous_evacuation)  
 ).
 /*-----------------------------------------------------------------------------------------------------------------------------*/
@@ -50,7 +50,7 @@ verificar(preventable_leakage_between_sit_and_orifice) :-
     (
         (estado(preventable_leakage_between_sit_and_orifice, desconocido), estado(safety_spring_ok, yes), writeln('Verificar if there is a preventable leakage'));  
         (estado(preventable_leakage_between_sit_and_orifice, no), writeln('Replace sit and orifice and put the safety valve into circuit'));
-        (estado(preventable_leakage_between_sit_and_orifice, yes), writeln('Set the safety valve acording to the instructions'));
+        (estado(preventable_leakage_between_sit_and_orifice, yes), writeln('Sistem ok, set the safety valve acording to the instructions'));
         verificar(safety_spring_ok)
     ).
 
@@ -63,14 +63,14 @@ verificar(safety_spring_ok) :-
 
 verificar(pressure_sensor_pipes_blocked) :-
     (
-        (estado(pressure_sensor_pipes_blocked, desconocido), estado(line_gas_pressure_ok, yes), writeln('Verificar if pressure sensor pipes are blocked'));
+        (estado(pressure_sensor_pipes_blocked, desconocido), estado(line_gas_pressure, P), regulating_pressure(RP), P==RP, writeln('Verificar if pressure sensor pipes are blocked'));
         (estado(pressure_sensor_pipes_blocked, yes), writeln('Clean up and fix the faults of sensing pipes'));
-        verificar(line_gas_pressure_ok)
+        verificar(line_gas_pressure)
     ).
-verificar(line_gas_pressure_ok) :-
+verificar(line_gas_pressure) :-
     (
-        (estado(line_gas_pressure_ok, desconocido), estado(safety_valve_has_continuous_evacuation, yes), writeln('Verificar line gas pressure'));
-        (estado(line_gas_pressure_ok, no), writeln('Please adjust the regulator acording to the instructions'));
+        (estado(line_gas_pressure, P), P==(-1), estado(safety_valve_has_continuous_evacuation, yes), writeln('Verificar line gas pressure'));
+        (estado(line_gas_pressure, P), regulating_pressure(RP), P<RP, P>0, writeln('Please adjust the regulator acording to the instructions'));
     	verificar(safety_valve_has_continuous_evacuation)
     ).
 /*---------------------------------------------------------------------------------------------*/
@@ -88,11 +88,11 @@ verificar(safety_system_having_dazzling_rusting_efects) :-
                     /*verificar(piloto_ok)*/
                 ). 
 
-verificar(thickness_less_than_limit) :-
+verificar(thickness) :-
                 (
-                    (estado(thickness_less_than_limit, desconocido), estado(safety_system_having_dazzling_rusting_efects, no),writeln('Verificar system thickness'));
-                    (estado(thickness_less_than_limit, yes), writeln('Please report to technical inspection unit'));
-                    (estado(thickness_less_than_limit, no), writeln('Equipment in good conticions'));
+                    (estado(thickness, Esp), Esp==(-1), estado(safety_system_having_dazzling_rusting_efects, no),writeln('Verificar system thickness'));
+                    (estado(thickness, Esp), Esp<3, Esp>0, writeln('Please report to technical inspection unit, little tickness'));
+                    (estado(thickness, Esp), Esp>=3, writeln('No dazzling and rusting efects , equipment in good conticions'));
                     verificar(safety_system_having_dazzling_rusting_efects)
                 ).
 /*---------------------------------------------------------------------------------------------*/
@@ -107,9 +107,9 @@ verificar(gas_leakage_at_joint) :-
 
 verificar(leakage_fixed_with_wrench) :-
                 (
-                    (estado(leakage_fixed_with_wrench, yes), writeln('Report to technical inspection unit'));
-                    (estado(leakage_fixed_with_wrench, no), writeln('Report to the repair departament'));
-                    (estado(leakage_fixed_with_wrench, desconocido), (estado(gas_leakage_at_joint, yes), writeln('Verificar si leakage was fixed with wrench')));
+                	(estado(leakage_fixed_with_wrench, desconocido), (estado(gas_leakage_at_joint, yes), writeln('Verificar si leakage was fixed with wrench')));
+                    (estado(leakage_fixed_with_wrench, yes), writeln('Report to technical inspection unit - leakage fixed with wrench'));
+                    (estado(leakage_fixed_with_wrench, no), writeln('Report to the repair departament, there is a trouble with the joint'));
                     verificar(gas_leakage_at_joint)
                 ).
 /*---------------------------------------------------------------------------------------------*/
@@ -118,38 +118,42 @@ verificar(leakage_fixed_with_wrench) :-
 verificar(sistema) :-
     estado(sistema, desconocido), writeln('Analizando sistema...'), 
 	(   
-    	verificar(thickness_less_than_limit), 
-    	verificar(leakage_fixed_with_wrench),
-    	verificar(piloto_ok);
-    	verificar(preventable_leakage_between_sit_and_orifice)
+    	verificar(thickness), verificar(leakage_fixed_with_wrench), 
+    	verificar(pilot_ok);
+    	verificar(pressure_of_the_relief_valve)
     ).
 /*--------------------------------------------------------------------------------------------------*/
 
 /* GROUND FACTS*/
 /*Verificacion de la evacuacion de gas*/
-estado(piloto_ok, desconocido).
+estado(pilot_ok, desconocido).
 estado(sit_and_orifice_ok, desconocido).
-estado(safety_valve_spring_ok, desconocido).
-estado(control_valve_sensors_blocked, desconocido).
-estado(valve_status_closed, desconocido).
-estado(relief_valve_ok_with_10_percent_more_pressure, desconocido).
-estado(safety_valve_has_continuous_evacuation, desconocido).
+estado(efficiency_of_safety_valve_spring, X) :- X is (-1).
+estado(control_valve_sensors, Tension) :- Tension is (-1).
+estado(valve_status, opened) :- valve_opening_status(O), O>=60.
+estado(valve_status, closed) :- valve_opening_status(O), O<60, O>0.
+estado(valve_status, desconocido) :- valve_opening_status(O), O==(-1).
+estado(pressure_of_the_relief_valve, X) :- X is (-1).
 
-estado(line_gas_pressure_ok, desconocido).
+estado(line_gas_pressure, X) :- X is (-1).
 estado(pressure_sensor_pipes_blocked, desconocido).
 estado(safety_spring_ok, desconocido).
 estado(preventable_leakage_between_sit_and_orifice, desconocido).
+estado(safety_valve_has_continuous_evacuation, desconocido).
 /*---------------------------------------------------------------------------------------------*/
 
 
 /*Verificacion del espesor de tubrias*/
-estado(thickness_less_than_limit, desconocido).
+estado(thickness, X) :- X is (-1).
 estado(safety_system_having_dazzling_rusting_efects, desconocido).
 /*---------------------------------------------------------------------------------------------*/
 
 /*Verificacion de fugas de gas*/
-estado(gas_leakage_at_joint, no).
+estado(gas_leakage_at_joint, desconocido).
 estado(leakage_fixed_with_wrench, desconocido).
 /*---------------------------------------------------------------------------------------------*/
 
 estado(sistema, desconocido).
+
+regulating_pressure(RP) :- RP is 300.
+valve_opening_status(O) :- O is (-1).
