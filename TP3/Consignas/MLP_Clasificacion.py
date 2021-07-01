@@ -182,4 +182,4 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     train(x, t, pesos, LEARNING_RATE, EPOCHS)
 
 
-iniciar(numero_clases=3, numero_ejemplos=300, graficar_datos=False)
+iniciar(numero_clases=3, numero_ejemplos=300, graficar_datos=True)
