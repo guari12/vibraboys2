@@ -52,6 +52,7 @@ def inicializar_pesos(n_entrada, n_capa_2, n_capa_3):
     randomgen = np.random.default_rng()
 
     w1 = 0.1 * randomgen.standard_normal((n_entrada, n_capa_2))
+    # Genera valores aleatorios con distribucion normal estandar (media 0 y desviacion estandar 1)
     b1 = 0.1 * randomgen.standard_normal((1, n_capa_2))
 
     w2 = 0.1 * randomgen.standard_normal((n_capa_2, n_capa_3))
@@ -87,18 +88,18 @@ def clasificar(x, pesos):
     # Tomamos el primero de los maximos (podria usarse otro criterio, como ser eleccion aleatoria)
     # Nuevamente, dado que max_scores puede contener varios renglones (uno por cada ejemplo),
     # retornamos la primera columna
-    return max_scores[:, 0]
+    return max_scores#[:, 0]
 
 # x: n entradas para cada uno de los m ejemplos(nxm)
 # t: salida correcta (target) para cada uno de los m ejemplos (m x 1)
 # pesos: pesos (W y b)
-def train(x, t, pesos, learning_rate, epochs):
+def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
     # Cantidad de filas (i.e. cantidad de ejemplos)
-    m = np.size(x, 0) 
+    m = np.size(x_train, 0)
     
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
-        resultados_feed_forward = ejecutar_adelante(x, pesos)
+        resultados_feed_forward = ejecutar_adelante(x_train, pesos)
         y = resultados_feed_forward["y"]
         h = resultados_feed_forward["h"]
         z = resultados_feed_forward["z"]
@@ -119,11 +120,70 @@ def train(x, t, pesos, learning_rate, epochs):
 
         # d. Calculo de la funcion de perdida global. Solo se usa la probabilidad de la clase correcta, 
         #    que tomamos del array t ("target")
-        loss = (1 / m) * np.sum( -np.log( p[range(m), t] ))
+        loss = (1 / m) * np.sum( -np.log( p[range(m), t_train] ))
+        
 
         # Mostramos solo cada 1000 epochs
         if i %1000 == 0:
-            print("Loss epoch", i, ":", loss)
+            # Training ========================================
+            
+            print("Training Loss epoch", i, ":", loss)
+            # ACCURACY
+            # Cantidad de ejemplos clasificados como C correctamente
+            # Cantidad total de ejemplos clasificados como C
+            accuracy = []
+            clases = np.size(y, 1)
+            neurona_ganadora = np.argmax(y, axis=1) # indices de la neurona ganadora
+            
+            for c in range(clases):
+                ejemplos_c = 0
+                aciertos_c = 0
+                for j in range(m):
+                    if neurona_ganadora[j]==c: # lo clasifico como c
+                        ejemplos_c+=1
+                        if neurona_ganadora[j]==t_train[j]: # y fue correcto (es de la clase c)
+                            aciertos_c+=1
+                if aciertos_c==0:
+                    accuracy.append(0)
+                else:
+                    accuracy.append(round(aciertos_c/ejemplos_c,2))
+            
+            print("Training Accuracy epoch",i,":",accuracy)
+            
+            # Testing ========================================
+            
+            resultados_feed_forward = ejecutar_adelante(x_test, pesos)
+            mm = np.size(x_test, 0)
+
+            Y = resultados_feed_forward["y"]
+            resultados = np.argmax(Y, axis=1)
+            
+            exp_scores_test = np.exp(Y)
+            sum_exp_scores_test = np.sum(exp_scores_test, axis=1, keepdims=True)
+            p_test = exp_scores_test / sum_exp_scores_test
+            loss_test = (1 / mm) * np.sum( -np.log( p_test[range(mm), t_test] ))
+            
+            # print("Testing Loss epoch", i, ":", loss_test)
+            
+            accuracy = []
+            
+            for c in range(clases):
+                ejemplos_c = 0
+                aciertos_c = 0
+                for j in range(mm):
+                    if resultados[j]==c: # lo clasifico como c
+                        ejemplos_c+=1
+                        if resultados[j]==t_test[j]: # y fue correcto (es de la clase c)
+                            aciertos_c+=1
+                if aciertos_c==0:
+                    accuracy.append(0)
+                else:
+                    accuracy.append(round(aciertos_c/ejemplos_c,2))
+                    
+            print(" Testing Accuracy epoch",i,":",accuracy)
+            print()
+            
+            
 
         # Extraemos los pesos a variables locales
         w1 = pesos["w1"]
@@ -133,7 +193,7 @@ def train(x, t, pesos, learning_rate, epochs):
 
         # Ajustamos los pesos: Backpropagation
         dL_dy = p                # Para todas las salidas, L' = p (la probabilidad)...
-        dL_dy[range(m), t] -= 1  # ... excepto para la clase correcta
+        dL_dy[range(m), t_train] -= 1  # ... excepto para la clase correcta
         dL_dy /= m
 
         dL_dw2 = h.T.dot(dL_dy)                         # Ajuste para w2
@@ -144,7 +204,7 @@ def train(x, t, pesos, learning_rate, epochs):
         dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
         dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
 
-        dL_dw1 = x.T.dot(dL_dz)                         # Ajuste para w1
+        dL_dw1 = x_train.T.dot(dL_dz)                         # Ajuste para w1
         dL_db1 = np.sum(dL_dz, axis=0, keepdims=True)   # Ajuste para b1
 
         # Aplicamos el ajuste a los pesos
@@ -163,12 +223,15 @@ def train(x, t, pesos, learning_rate, epochs):
 
 def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Generamos datos
-    x, t = generar_datos_clasificacion(numero_ejemplos, numero_clases)
+    x_train, t_train = generar_datos_clasificacion(round(numero_ejemplos*0.8), numero_clases)
+    x_test, t_test = generar_datos_clasificacion(round(numero_ejemplos*0.2), numero_clases)
 
     # Graficamos los datos si es necesario
     if graficar_datos:
         # Parametro: "c": color (un color distinto para cada clase en t)
-        plt.scatter(x[:, 0], x[:, 1], c=t)
+        plt.scatter(x_train[:, 0], x_train[:, 1], c=t_train)
+        plt.show()
+        plt.scatter(x_test[:, 0], x_test[:, 1], c=t_test)
         plt.show()
 
     # Inicializa pesos de la red
@@ -179,7 +242,8 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Entrena
     LEARNING_RATE=1
     EPOCHS=10000
-    train(x, t, pesos, LEARNING_RATE, EPOCHS)
+    train(x_train, t_train, x_test, t_test, pesos, LEARNING_RATE, EPOCHS)
 
 
-iniciar(numero_clases=3, numero_ejemplos=300, graficar_datos=False)
+iniciar(numero_clases=3, numero_ejemplos=540, graficar_datos=True)
+
