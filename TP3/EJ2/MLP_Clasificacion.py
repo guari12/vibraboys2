@@ -152,20 +152,10 @@ def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
             
             # Testing ========================================
             
-            resultados_feed_forward = ejecutar_adelante(x_test, pesos)
             mm = np.size(x_test, 0)
-
-            Y = resultados_feed_forward["y"]
-            resultados = np.argmax(Y, axis=1)
+            resultados = clasificar(x_test, pesos)
             
-            exp_scores_test = np.exp(Y)
-            sum_exp_scores_test = np.sum(exp_scores_test, axis=1, keepdims=True)
-            p_test = exp_scores_test / sum_exp_scores_test
-            loss_test = (1 / mm) * np.sum( -np.log( p_test[range(mm), t_test] ))
-            
-            # print("Testing Loss epoch", i, ":", loss_test)
-            
-            accuracy = []
+            accuracy_test = []
             
             for c in range(clases):
                 ejemplos_c = 0
@@ -176,11 +166,11 @@ def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
                         if resultados[j]==t_test[j]: # y fue correcto (es de la clase c)
                             aciertos_c+=1
                 if aciertos_c==0:
-                    accuracy.append(0)
+                    accuracy_test.append(0)
                 else:
-                    accuracy.append(round(aciertos_c/ejemplos_c,2))
+                    accuracy_test.append(round(aciertos_c/ejemplos_c,2))
                     
-            print(" Testing Accuracy epoch",i,":",accuracy)
+            print("Testing Accuracy epoch ",i,":",accuracy_test)
             print()
             
             
