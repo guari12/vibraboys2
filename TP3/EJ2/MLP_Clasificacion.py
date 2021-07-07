@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # Generador basado en ejemplo del curso CS231 de Stanford: 
 # CS231n Convolutional Neural Networks for Visual Recognition
 # (https://cs231n.github.io/neural-networks-case-study/)
+
 def generar_datos_clasificacion(cantidad_ejemplos, cantidad_clases):
     FACTOR_ANGULO = 0.79
     AMPLITUD_ALEATORIEDAD = 0.1
