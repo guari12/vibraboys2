@@ -93,9 +93,15 @@ def clasificar(x, pesos):
 # x: n entradas para cada uno de los m ejemplos(nxm)
 # t: salida correcta (target) para cada uno de los m ejemplos (m x 1)
 # pesos: pesos (W y b)
-def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
+def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, learning_rate, epochs, detencion_temprana):
     # Cantidad de filas (i.e. cantidad de ejemplos)
     m = np.size(x_train, 0)
+    
+    # Cantidad de epochs a las cuales hay que revisar con el conjunto de validacion
+    # para hacer una detencion temprana del entrenamiento si ya no hay mejoras
+    N = detencion_temprana
+    
+    minAccuracy = None # precision minima de prediccion
     
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
@@ -123,11 +129,14 @@ def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
         loss = (1 / m) * np.sum( -np.log( p[range(m), t_train] ))
         
 
-        # Mostramos solo cada 1000 epochs
-        if i %1000 == 0:
+        # Mostramos solo cada N epochs
+        if i % N == 0:
+            print()
+            
             # Training ========================================
             
             print("Training Loss epoch", i, ":", loss)
+            
             # ACCURACY
             # Cantidad de ejemplos clasificados como C correctamente
             # Cantidad total de ejemplos clasificados como C
@@ -150,12 +159,12 @@ def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
             
             print("Training Accuracy epoch",i,":",accuracy)
             
-            # Testing ========================================
+            # Validation ========================================
             
-            mm = np.size(x_test, 0)
-            resultados = clasificar(x_test, pesos)
+            mm = np.size(x_validation, 0)
+            resultados = clasificar(x_validation, pesos)
             
-            accuracy_test = []
+            accuracy_validation = []
             
             for c in range(clases):
                 ejemplos_c = 0
@@ -163,15 +172,23 @@ def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
                 for j in range(mm):
                     if resultados[j]==c: # lo clasifico como c
                         ejemplos_c+=1
-                        if resultados[j]==t_test[j]: # y fue correcto (es de la clase c)
+                        if resultados[j]==t_validation[j]: # y fue correcto (es de la clase c)
                             aciertos_c+=1
                 if aciertos_c==0:
-                    accuracy_test.append(0)
+                    accuracy_validation.append(0)
                 else:
-                    accuracy_test.append(round(aciertos_c/ejemplos_c,2))
+                    accuracy_validation.append(round(aciertos_c/ejemplos_c,2))
                     
-            print("Testing Accuracy epoch ",i,":",accuracy_test)
-            print()
+            print("Validation Accuracy epoch ",i,":",accuracy_validation)
+            
+            if minAccuracy==None:
+                minAccuracy = min(accuracy_validation)
+            elif min(accuracy_validation)<minAccuracy:
+                pass # empezo a empeorar
+                print("Empeoro!!")
+                break
+            else:
+                minAccuracy = min(accuracy_validation)
             
             
 
@@ -209,31 +226,67 @@ def train(x_train, t_train, x_test, t_test, pesos, learning_rate, epochs):
         pesos["b1"] = b1
         pesos["w2"] = w2
         pesos["b2"] = b2
-
+    
+    # Termino el ciclo de entrenamiento
+    print()
+    print(f" * Termino el entrenamiento en {i} epochs")
+    
+    # Testing ========================================
+    mm = np.size(x_test, 0)
+    resultados = clasificar(x_test, pesos)
+    
+    accuracy_test = []
+    
+    for c in range(clases):
+        ejemplos_c = 0
+        aciertos_c = 0
+        for j in range(mm):
+            if resultados[j]==c: # lo clasifico como c
+                ejemplos_c+=1
+                if resultados[j]==t_test[j]: # y fue correcto (es de la clase c)
+                    aciertos_c+=1
+        if aciertos_c==0:
+            accuracy_test.append(0)
+        else:
+            accuracy_test.append(round(aciertos_c/ejemplos_c,2))
+            
+    print(" * Testing Accuracy epoch ",i,":",accuracy_test)
+    
+    
+    
 
 def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Generamos datos
     x_train, t_train = generar_datos_clasificacion(round(numero_ejemplos*0.8), numero_clases)
+    x_validation, t_validation = generar_datos_clasificacion(round(numero_ejemplos*0.2),numero_clases)
     x_test, t_test = generar_datos_clasificacion(round(numero_ejemplos*0.2), numero_clases)
 
     # Graficamos los datos si es necesario
     if graficar_datos:
         # Parametro: "c": color (un color distinto para cada clase en t)
         plt.scatter(x_train[:, 0], x_train[:, 1], c=t_train)
+        plt.title("Entrenamiento")
         plt.show()
+        
+        plt.scatter(x_validation[:, 0], x_validation[:, 1], c=t_validation)
+        plt.title("Validacion")
+        plt.show()
+        
         plt.scatter(x_test[:, 0], x_test[:, 1], c=t_test)
+        plt.title("Test")
         plt.show()
 
     # Inicializa pesos de la red
     NEURONAS_CAPA_OCULTA = 100
     NEURONAS_ENTRADA = 2
+    DETENCION_TEMPRANA = 500
     pesos = inicializar_pesos(n_entrada=NEURONAS_ENTRADA, n_capa_2=NEURONAS_CAPA_OCULTA, n_capa_3=numero_clases)
 
     # Entrena
     LEARNING_RATE=1
     EPOCHS=10000
-    train(x_train, t_train, x_test, t_test, pesos, LEARNING_RATE, EPOCHS)
+    train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA)
 
 
-iniciar(numero_clases=3, numero_ejemplos=540, graficar_datos=True)
+iniciar(numero_clases=3, numero_ejemplos=400, graficar_datos=True)
 
