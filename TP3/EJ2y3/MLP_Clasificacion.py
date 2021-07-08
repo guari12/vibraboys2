@@ -50,6 +50,51 @@ def generar_datos_clasificacion(cantidad_ejemplos, cantidad_clases):
 
     return x, t
 
+def generar_datos_clasificacion2(cantidad_ejemplos, cantidad_clases):
+    FACTOR_ANGULO = 1
+    AMPLITUD_ALEATORIEDAD = 0.1
+
+    # Calculamos la cantidad de puntos por cada clase, asumiendo la misma cantidad para cada 
+    # una (clases balanceadas)
+    n = int(cantidad_ejemplos / cantidad_clases)
+
+    # Entradas: 2 columnas (x1 y x2)
+    x = np.zeros((cantidad_ejemplos, 2))
+    # Salida deseada ("target"): 1 columna que contendra la clase correspondiente (codificada como un entero)
+    t = np.zeros(cantidad_ejemplos, dtype="uint8")  # 1 columna: la clase correspondiente (t -> "target")
+
+    randomgen = np.random.default_rng()
+    
+    r = np.linspace(0, 1, cantidad_clases)
+
+    # Por cada clase (que va de 0 a cantidad_clases)...
+    for clase in range(cantidad_clases):
+        # Tomando la ecuacion parametrica del circulo (x = r * cos(t), y = r * sin(t)), generamos 
+        # radios distribuidos uniformemente entre 0 y 1 para la clase actual, y agregamos un poco de
+        # aleatoriedad
+        radios = r[clase] + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=n)
+
+        # ... y angulos distribuidos tambien uniformemente, con un desfasaje por cada clase
+        angulos = np.linspace( - np.pi * FACTOR_ANGULO, np.pi * FACTOR_ANGULO, n)
+
+        # Generamos un rango con los subindices de cada punto de esta clase. Este rango se va
+        # desplazando para cada clase: para la primera clase los indices estan en [0, n-1], para
+        # la segunda clase estan en [n, (2 * n) - 1], etc.
+        indices = range(clase * n, (clase + 1) * n)
+
+        # Generamos las "entradas", los valores de las variables independientes. Las variables:
+        # radios, angulos e indices tienen n elementos cada una, por lo que le estamos agregando
+        # tambien n elementos a la variable x (que incorpora ambas entradas, x1 y x2)
+        x1 = radios * np.sin(angulos)
+        x2 = radios * np.cos(angulos)
+        x[indices] = np.c_[x1, x2]
+
+        # Guardamos el valor de la clase que le vamos a asociar a las entradas x1 y x2 que acabamos
+        # de generar
+        t[indices] = clase
+
+    return x, t
+
 
 def inicializar_pesos(n_entrada, n_capa_2, n_capa_3):
     randomgen = np.random.default_rng()
@@ -174,7 +219,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
             elif accuracy_validation<=prevAccuracy:
                 # empezo a empeorar
                 print("Empeoro!!")
-                prob = randint(0, 100)/100
+                prob = randint(0, 10)/10
                 
                 # hacemos una parada temprana en base a una probabilidad
                 if prob<(i/epochs): # print(prob,i/epochs)
@@ -205,7 +250,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
         dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
         dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
 
-        dL_dw1 = x_train.T.dot(dL_dz)                         # Ajuste para w1
+        dL_dw1 = x_train.T.dot(dL_dz)                   # Ajuste para w1
         dL_db1 = np.sum(dL_dz, axis=0, keepdims=True)   # Ajuste para b1
 
         # Aplicamos el ajuste a los pesos
@@ -243,9 +288,9 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
 
 def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Generamos datos
-    x_train, t_train = generar_datos_clasificacion(round(numero_ejemplos*0.8), numero_clases)
-    x_validation, t_validation = generar_datos_clasificacion(round(numero_ejemplos*0.2),numero_clases)
-    x_test, t_test = generar_datos_clasificacion(round(numero_ejemplos*0.2), numero_clases)
+    x_train, t_train = generar_datos_clasificacion2(round(numero_ejemplos*0.8), numero_clases)
+    x_validation, t_validation = generar_datos_clasificacion2(round(numero_ejemplos*0.2),numero_clases)
+    x_test, t_test = generar_datos_clasificacion2(round(numero_ejemplos*0.2), numero_clases)
 
     # Graficamos los datos si es necesario
     if graficar_datos:
