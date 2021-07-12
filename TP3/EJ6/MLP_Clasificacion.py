@@ -183,11 +183,11 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
 
         # Mostramos solo cada N epochs
         if i % N == 0:
-            print()
+            # print()
             
             # Training ========================================
             
-            print("Training Loss epoch", i, ":", loss)
+            # print("Training Loss epoch", i, ":", loss)
             
             # ACCURACY
             # aciertos/ejemplos totales
@@ -202,7 +202,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
                     accuracy+=1
             accuracy/=cant_ejemplos
             
-            print("Training Accuracy epoch",i,":",accuracy)
+            # print("Training Accuracy epoch",i,":",accuracy)
             
             # Validation ========================================
             
@@ -217,17 +217,17 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
             accuracy_validation/=mm
             list_accuracy.append(accuracy_validation)
             list_epochs.append(i)
-            print("Validation Accuracy epoch ",i,":",accuracy_validation)
+            # print("Validation Accuracy epoch ",i,":",accuracy_validation)
             
             if prevAccuracy==None:
                 prevAccuracy = accuracy_validation
             elif accuracy_validation<=prevAccuracy:
                 # empezo a empeorar
-                print("Empeoro!!")
+                # print("Empeoro!!")
                 prob = randint(0, 100)/100
                 
                 # hacemos una parada temprana en base a una probabilidad
-                if prob<(i/epochs): # print(prob,i/epochs)
+                if False:#prob<(i/epochs): # print(prob,i/epochs)
                     break
                 else:
                     prevAccuracy = accuracy_validation
@@ -275,8 +275,8 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
         pesos["b2"] = b2
     
     # Termino el ciclo de entrenamiento
-    print()
-    print(f" * Termino el entrenamiento en {i} epochs")
+    # print()
+    # print(f" * Termino el entrenamiento en {i} epochs")
     
     # Testing ========================================
     mm = np.size(x_test, 0)
@@ -300,7 +300,7 @@ def sigmoid(x):
     
     
 
-def iniciar(numero_clases, numero_ejemplos,learnign, graficar_datos,sig=False):
+def iniciar(numero_clases, numero_ejemplos,learnign,neuronas, graficar_datos,sig=False):
     # Generamos datos
     x_train, t_train = generar_datos_clasificacion2(round(numero_ejemplos*0.8), numero_clases)
     x_validation, t_validation = generar_datos_clasificacion2(round(numero_ejemplos*0.2),numero_clases)
@@ -323,22 +323,22 @@ def iniciar(numero_clases, numero_ejemplos,learnign, graficar_datos,sig=False):
 
 
     # Inicializa pesos de la red
-    NEURONAS_CAPA_OCULTA = 100
+    NEURONAS_CAPA_OCULTA = neuronas
     NEURONAS_ENTRADA = 2
-    DETENCION_TEMPRANA = 200
+    DETENCION_TEMPRANA = 20
     pesos = inicializar_pesos(n_entrada=NEURONAS_ENTRADA, n_capa_2=NEURONAS_CAPA_OCULTA, n_capa_3=numero_clases)
 
     # Entrena
     LEARNING_RATE=learnign
-    EPOCHS=10000
+    EPOCHS=2000
     train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA,sig)
 aux=[]
 for i in range(5):
     aux.append(20*(i+1))
     list_accuracy=[]
     list_epochs=[]
-    iniciar(numero_clases=3, numero_ejemplos=400,learnign=500, graficar_datos=False)
-    s=f"Cant. neuronas: {round(aux[i],2)}"
+    iniciar(numero_clases=3, numero_ejemplos=400,learnign=1,neuronas=aux[i], graficar_datos=False)
+    s=f"Cant. Neuronas: {round(aux[i],2)}"
     plt.plot(list_epochs,list_accuracy,label=s)
     plt.title("Precisión vs Epochs")
     
