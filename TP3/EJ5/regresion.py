@@ -8,10 +8,10 @@ from random import randint
 # (https://cs231n.github.io/neural-networks-case-study/)
 
 def generar_datos_regresion(cantidad_ejemplos):
-    AMPLITUD_ALEATORIEDAD = 0.9
+    AMPLITUD_ALEATORIEDAD = 0.5
 
     # Entradas: 2 columnas (x1 y x2)
-    x = np.zeros((cantidad_ejemplos, 2))
+    x = np.zeros((cantidad_ejemplos, 1))
     # Salida deseada ("target"): 1 columna que contendra la clase correspondiente (codificada como un entero)
     t = np.zeros((cantidad_ejemplos,1))  # 1 columna: la clase correspondiente (t -> "target")
 
@@ -19,8 +19,10 @@ def generar_datos_regresion(cantidad_ejemplos):
 
     # Se generan datos aleatorios siguiendo como valor medio una linea, si se implementa la funcion 
     # liespace. Si se implementa la funcion uniform se obtienen valores completamente aleaotrios
-    x1 = np.linspace(0, 5, cantidad_ejemplos) + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)
-    x2 = np.linspace(0, 5, cantidad_ejemplos) + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)
+ 
+
+    x1 = np.linspace(0, 5, cantidad_ejemplos)
+    x2 = np.linspace(0, 5, cantidad_ejemplos) + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)   
     #x1 = np.random.uniform(0,5,cantidad_ejemplos)
     #x2 = np.random.uniform(0,5,cantidad_ejemplos)
 
@@ -29,27 +31,29 @@ def generar_datos_regresion(cantidad_ejemplos):
 
     #Creamos la matriz de ejemplos de regresion
     x1.sort()                       #Ordenamos en orden creciente las abcisas
-    x[indices] = np.c_[x1, x2]
+    x[indices] = np.c_[x1] #, x2]
 
+    t[indices] = np.c_[x2]
     # Generamos los vlaores deseados t (target) como una recta que pasa por dos puntos promedio
     # de los valoresgenerados
-    sum_y=0
-    sum_x=0
-    prom = np.zeros((2,2))
-    for i in range(cantidad_ejemplos):
-            sum_x = sum_x + x[i][0]
-            sum_y = sum_y + x[i][1]
-            if i==int(cantidad_ejemplos/2):
-                prom[0] = np.c_[sum_x/(cantidad_ejemplos/2),sum_y/(cantidad_ejemplos/2)]
-                sum_x=0
-                sum_y=0
-    prom[1] = np.c_[sum_x/(cantidad_ejemplos/2),sum_y/(cantidad_ejemplos/2)]
-    m = (prom[1][1] - prom[0][1])/(prom[1][0] - prom[0][0])
-    b = prom[0][1] - m*prom[0][0]
-    for i in range(cantidad_ejemplos):
-        t[i] = m*x1[i] + b
+    #sum_y=0
+    #sum_x=0
+    # prom = np.zeros((2,2))
+    # for i in range(cantidad_ejemplos):
+    #         sum_x = sum_x + x[i][0]
+    #         sum_y = sum_y + x[i][1]
+    #         if i==int(cantidad_ejemplos/2):
+    #             prom[0] = np.c_[sum_x/(cantidad_ejemplos/2),sum_y/(cantidad_ejemplos/2)]
+    #             sum_x=0
+    #             sum_y=0
+    # prom[1] = np.c_[sum_x/(cantidad_ejemplos/2),sum_y/(cantidad_ejemplos/2)]
+    # m = (prom[1][1] - prom[0][1])/(prom[1][0] - prom[0][0])
+    # b = prom[0][1] - m*prom[0][0]
+    # for i in range(cantidad_ejemplos):
+    #     t[i] = m*x1[i] + b
 
     return x, t
+
 
 
 def inicializar_pesos(n_entrada, n_capa_2, n_capa_3):
@@ -93,7 +97,7 @@ def clasificar(x, pesos):
     # Tomamos el primero de los maximos (podria usarse otro criterio, como ser eleccion aleatoria)
     # Nuevamente, dado que max_scores puede contener varios renglones (uno por cada ejemplo),
     # retornamos la primera columna
-    return y#[:, 0]
+    return y #[:, 0]
 
 # x: n entradas para cada uno de los m ejemplos(nxm)
 # t: salida correcta (target) para cada uno de los m ejemplos (m x 1)
@@ -106,7 +110,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     # para hacer una detencion temprana del entrenamiento si ya no hay mejoras
     N = detencion_temprana
     
-    prevAccuracy = None # precision minima de prediccion
+    #prevAccuracy = None # precision minima de prediccion
     
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
@@ -129,6 +133,11 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
             print()
             print("Training Loss epoch", i, ":", loss)
             
+            #mm = np.size(x_test, 0)
+            resultados = clasificar(x_test, pesos)
+            plt.scatter(x_test[:, 0], resultados)
+            plt.yticks(range(0,5))
+            plt.show()
 
         # Extraemos los pesos a variables locales
         w1 = pesos["w1"]
@@ -137,7 +146,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
         b2 = pesos["b2"]
 
         # Ajustamos los pesos: Backpropagation
-        dL_dy = y-t_train         
+        dL_dy = y-t_train     
         dL_dy = dL_dy*(2/m)
 
         dL_dw2 = h.T.dot(dL_dy)                         # Ajuste para w2
@@ -180,19 +189,19 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Graficamos los datos si es necesario
     if graficar_datos:
         # Parametro: "c": color (un color distinto para cada clase en t)
-        plt.scatter(x_train[:, 0], x_train[:, 1])
+        #plt.scatter(x_train[:, 0], x_train[:, 1])
         plt.scatter(x_train[:, 0], t_train)
         plt.yticks(range(0,5))
         plt.title("Entrenamiento")
         plt.show()
         
-        plt.scatter(x_validation[:, 0], x_validation[:, 1])
+        #plt.scatter(x_validation[:, 0], x_validation[:, 1])
         plt.scatter(x_validation[:, 0], t_validation)
         plt.yticks(range(0,5))
         plt.title("Validacion")
         plt.show()
         
-        plt.scatter(x_test[:, 0], x_test[:, 1])
+        #plt.scatter(x_test[:, 0], x_test[:, 1])
         plt.scatter(x_test[:, 0], t_test)
         plt.yticks(range(0,5))
         plt.title("Test")
@@ -200,14 +209,14 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
 
     # Inicializa pesos de la red
     NEURONAS_CAPA_OCULTA = 100
-    NEURONAS_ENTRADA = 2
+    NEURONAS_ENTRADA = 1
     DETENCION_TEMPRANA = 500
     pesos = inicializar_pesos(n_entrada=NEURONAS_ENTRADA, n_capa_2=NEURONAS_CAPA_OCULTA, n_capa_3=numero_clases)
 
     # Entrena
-    LEARNING_RATE=0.5
+    LEARNING_RATE=1
     EPOCHS=10000
     train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA)
 
 
-iniciar(numero_clases=1, numero_ejemplos=400, graficar_datos=True)
+iniciar(numero_clases=1, numero_ejemplos=400, graficar_datos=False)
