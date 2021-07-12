@@ -8,7 +8,7 @@ from random import randint
 # (https://cs231n.github.io/neural-networks-case-study/)
 
 def generar_datos_clasificacion(cantidad_ejemplos, cantidad_clases):
-    FACTOR_ANGULO = 0.3
+    FACTOR_ANGULO = 0.79
     AMPLITUD_ALEATORIEDAD = 0.1
 
     # Calculamos la cantidad de puntos por cada clase, asumiendo la misma cantidad para cada 
@@ -51,7 +51,7 @@ def generar_datos_clasificacion(cantidad_ejemplos, cantidad_clases):
     return x, t
 
 def generar_datos_clasificacion2(cantidad_ejemplos, cantidad_clases):
-    FACTOR_ANGULO = 0.3
+    FACTOR_ANGULO = 1
     AMPLITUD_ALEATORIEDAD = 0.1
 
     # Calculamos la cantidad de puntos por cada clase, asumiendo la misma cantidad para cada 
@@ -109,15 +109,12 @@ def inicializar_pesos(n_entrada, n_capa_2, n_capa_3):
     return {"w1": w1, "b1": b1, "w2": w2, "b2": b2}
 
 
-def ejecutar_adelante(x, pesos,sig):
+def ejecutar_adelante(x, pesos):
     # Funcion de entrada (a.k.a. "regla de propagacion") para la primera capa oculta
     z = x.dot(pesos["w1"]) + pesos["b1"]
 
     # Funcion de activacion ReLU para la capa oculta (h -> "hidden")
-    if sig:
-        h=sigmoid(z)
-    else:
-        h = np.maximum(0, z)
+    h = np.maximum(0, z)
 
     # Salida de la red (funcion de activacion lineal). Esto incluye la salida de todas
     # las neuronas y para todos los ejemplos proporcionados
@@ -126,9 +123,9 @@ def ejecutar_adelante(x, pesos,sig):
     return {"z": z, "h": h, "y": y}
 
 
-def clasificar(x, pesos,sig):
+def clasificar(x, pesos):
     # Corremos la red "hacia adelante"
-    resultados_feed_forward = ejecutar_adelante(x, pesos,sig)
+    resultados_feed_forward = ejecutar_adelante(x, pesos)
     
     # Buscamos la(s) clase(s) con scores mas altos (en caso de que haya mas de una con 
     # el mismo score estas podrian ser varias). Dado que se puede ejecutar en batch (x 
@@ -157,7 +154,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
-        resultados_feed_forward = ejecutar_adelante(x_train, pesos,sig)
+        resultados_feed_forward = ejecutar_adelante(x_train, pesos)
         y = resultados_feed_forward["y"]
         h = resultados_feed_forward["h"]
         z = resultados_feed_forward["z"]
@@ -207,7 +204,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
             # Validation ========================================
             
             mm = np.size(x_validation, 0)
-            resultados = clasificar(x_validation, pesos,sig)
+            resultados = clasificar(x_validation, pesos)
             
             accuracy_validation = 0
             
@@ -248,11 +245,9 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
 
         dL_dh = dL_dy.dot(w2.T)
         
-        if sig:
-            dL_dz = dL_dh *sigmoid(z)*(1-sigmoid(z))
-        else:
-            dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
-            dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
+        
+        dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
+        dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
 
         dL_dw1 = x_train.T.dot(dL_dz)                   # Ajuste para w1
         dL_db1 = np.sum(dL_dz, axis=0, keepdims=True)   # Ajuste para b1
@@ -276,7 +271,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     
     # Testing ========================================
     mm = np.size(x_test, 0)
-    resultados = clasificar(x_test, pesos,sig)
+    resultados = clasificar(x_test, pesos)
     
     accuracy_test = 0
     
@@ -296,11 +291,11 @@ def sigmoid(x):
     
     
 
-def iniciar(numero_clases, numero_ejemplos, graficar_datos,sig=False):
+def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Generamos datos
-    x_train, t_train = generar_datos_clasificacion2(round(numero_ejemplos*0.8), numero_clases)
-    x_validation, t_validation = generar_datos_clasificacion2(round(numero_ejemplos*0.2),numero_clases)
-    x_test, t_test = generar_datos_clasificacion2(round(numero_ejemplos*0.2), numero_clases)
+    x_train, t_train = generar_datos_clasificacion(round(numero_ejemplos*0.8), numero_clases)
+    x_validation, t_validation = generar_datos_clasificacion(round(numero_ejemplos*0.2),numero_clases)
+    x_test, t_test = generar_datos_clasificacion(round(numero_ejemplos*0.2), numero_clases)
 
     # Graficamos los datos si es necesario
     if graficar_datos:
