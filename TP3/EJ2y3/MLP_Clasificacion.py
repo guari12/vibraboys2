@@ -109,12 +109,15 @@ def inicializar_pesos(n_entrada, n_capa_2, n_capa_3):
     return {"w1": w1, "b1": b1, "w2": w2, "b2": b2}
 
 
-def ejecutar_adelante(x, pesos):
+def ejecutar_adelante(x, pesos,sig):
     # Funcion de entrada (a.k.a. "regla de propagacion") para la primera capa oculta
     z = x.dot(pesos["w1"]) + pesos["b1"]
 
     # Funcion de activacion ReLU para la capa oculta (h -> "hidden")
-    h = np.maximum(0, z)
+    if sig:
+        h=sigmoid(z)
+    else:
+        h = np.maximum(0, z)
 
     # Salida de la red (funcion de activacion lineal). Esto incluye la salida de todas
     # las neuronas y para todos los ejemplos proporcionados
@@ -123,9 +126,9 @@ def ejecutar_adelante(x, pesos):
     return {"z": z, "h": h, "y": y}
 
 
-def clasificar(x, pesos):
+def clasificar(x, pesos,sig):
     # Corremos la red "hacia adelante"
-    resultados_feed_forward = ejecutar_adelante(x, pesos)
+    resultados_feed_forward = ejecutar_adelante(x, pesos,sig)
     
     # Buscamos la(s) clase(s) con scores mas altos (en caso de que haya mas de una con 
     # el mismo score estas podrian ser varias). Dado que se puede ejecutar en batch (x 
@@ -141,7 +144,7 @@ def clasificar(x, pesos):
 # x: n entradas para cada uno de los m ejemplos(nxm)
 # t: salida correcta (target) para cada uno de los m ejemplos (m x 1)
 # pesos: pesos (W y b)
-def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, learning_rate, epochs, detencion_temprana):
+def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, learning_rate, epochs, detencion_temprana,sig):
     # Cantidad de filas (i.e. cantidad de ejemplos)
     m = np.size(x_train, 0)
     
@@ -153,7 +156,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
-        resultados_feed_forward = ejecutar_adelante(x_train, pesos)
+        resultados_feed_forward = ejecutar_adelante(x_train, pesos,sig)
         y = resultados_feed_forward["y"]
         h = resultados_feed_forward["h"]
         z = resultados_feed_forward["z"]
@@ -203,7 +206,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
             # Validation ========================================
             
             mm = np.size(x_validation, 0)
-            resultados = clasificar(x_validation, pesos)
+            resultados = clasificar(x_validation, pesos,sig)
             
             accuracy_validation = 0
             
@@ -247,8 +250,11 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
 
         dL_dh = dL_dy.dot(w2.T)
         
-        dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
-        dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
+        if sig:
+            dL_dz = dL_dh *sigmoid(z)*(1-sigmoid(z))
+        else:
+            dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
+            dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
 
         dL_dw1 = x_train.T.dot(dL_dz)                   # Ajuste para w1
         dL_db1 = np.sum(dL_dz, axis=0, keepdims=True)   # Ajuste para b1
@@ -272,7 +278,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     
     # Testing ========================================
     mm = np.size(x_test, 0)
-    resultados = clasificar(x_test, pesos)
+    resultados = clasificar(x_test, pesos,sig)
     
     accuracy_test = 0
     
@@ -282,11 +288,17 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     accuracy_test/=mm
             
     print(" * Testing Accuracy epoch ",i,":",accuracy_test)
-    
+
+#Función sigmoide estable
+
+def sigmoid(x):
+
+    sig = np.where(x < 0, np.exp(x)/(1 + np.exp(x)), 1/(1 + np.exp(-x)))
+    return sig   
     
     
 
-def iniciar(numero_clases, numero_ejemplos, graficar_datos):
+def iniciar(numero_clases, numero_ejemplos, graficar_datos,sig=False):
     # Generamos datos
     x_train, t_train = generar_datos_clasificacion2(round(numero_ejemplos*0.8), numero_clases)
     x_validation, t_validation = generar_datos_clasificacion2(round(numero_ejemplos*0.2),numero_clases)
@@ -307,6 +319,7 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
         plt.title("Test")
         plt.show()
 
+
     # Inicializa pesos de la red
     NEURONAS_CAPA_OCULTA = 100
     NEURONAS_ENTRADA = 2
@@ -316,7 +329,7 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
     # Entrena
     LEARNING_RATE=1
     EPOCHS=10000
-    train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA)
+    train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA,sig)
 
 
 iniciar(numero_clases=3, numero_ejemplos=400, graficar_datos=True)
