@@ -8,49 +8,31 @@ from random import randint
 # (https://cs231n.github.io/neural-networks-case-study/)
 
 def generar_datos_regresion(cantidad_ejemplos):
-    AMPLITUD_ALEATORIEDAD = 0.5
+    AMPLITUD_ALEATORIEDAD = 0.8
 
-    # Entradas: 2 columnas (x1 y x2)
+    # Entradas: 1 col x1 
     x = np.zeros((cantidad_ejemplos, 1))
-    # Salida deseada ("target"): 1 columna que contendra la clase correspondiente (codificada como un entero)
-    t = np.zeros((cantidad_ejemplos,1))  # 1 columna: la clase correspondiente (t -> "target")
+    # Salida deseada ("target"): 1 columna que contendra valores aleatorios asignados a cada una 
+    # de las x. Dichos valores se distribuyen aleatoriamente en forma lineal, de manera que pueden
+    # ser bien aproximados por una linea recta
+    t = np.zeros((cantidad_ejemplos,1)) 
 
     randomgen = np.random.default_rng()
 
-    # Se generan datos aleatorios siguiendo como valor medio una linea, si se implementa la funcion 
-    # liespace. Si se implementa la funcion uniform se obtienen valores completamente aleaotrios
- 
-
+    # Se generan datos aleatorios siguiendo una linea como valor medio 
     x1 = np.linspace(0, 5, cantidad_ejemplos)
-    x2 = np.linspace(0, 5, cantidad_ejemplos) + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)   
-    #x1 = np.random.uniform(0,5,cantidad_ejemplos)
-    #x2 = np.random.uniform(0,5,cantidad_ejemplos)
+    x2 = x1 + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)   
+
+    #np.power(x1,2)
 
     # Generamos un rango con los subindices de cada punto generado.
     indices = range(0, cantidad_ejemplos)
 
     #Creamos la matriz de ejemplos de regresion
     x1.sort()                       #Ordenamos en orden creciente las abcisas
-    x[indices] = np.c_[x1] #, x2]
+    x[indices] = np.c_[x1] 
 
     t[indices] = np.c_[x2]
-    # Generamos los vlaores deseados t (target) como una recta que pasa por dos puntos promedio
-    # de los valoresgenerados
-    #sum_y=0
-    #sum_x=0
-    # prom = np.zeros((2,2))
-    # for i in range(cantidad_ejemplos):
-    #         sum_x = sum_x + x[i][0]
-    #         sum_y = sum_y + x[i][1]
-    #         if i==int(cantidad_ejemplos/2):
-    #             prom[0] = np.c_[sum_x/(cantidad_ejemplos/2),sum_y/(cantidad_ejemplos/2)]
-    #             sum_x=0
-    #             sum_y=0
-    # prom[1] = np.c_[sum_x/(cantidad_ejemplos/2),sum_y/(cantidad_ejemplos/2)]
-    # m = (prom[1][1] - prom[0][1])/(prom[1][0] - prom[0][0])
-    # b = prom[0][1] - m*prom[0][0]
-    # for i in range(cantidad_ejemplos):
-    #     t[i] = m*x1[i] + b
 
     return x, t
 
@@ -75,6 +57,7 @@ def ejecutar_adelante(x, pesos):
 
     # Funcion de activacion ReLU para la capa oculta (h -> "hidden")
     h = np.maximum(0, z)
+    #h=sigmoid(z)
 
     # Salida de la red (funcion de activacion lineal). Esto incluye la salida de todas
     # las neuronas y para todos los ejemplos proporcionados
@@ -110,7 +93,7 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
     # para hacer una detencion temprana del entrenamiento si ya no hay mejoras
     N = detencion_temprana
     
-    #prevAccuracy = None # precision minima de prediccion
+    prevLoss = None   # precision minima de prediccion
     
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
@@ -132,13 +115,33 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
 
             print()
             print("Training Loss epoch", i, ":", loss)
-            
-            #mm = np.size(x_test, 0)
-            resultados = clasificar(x_test, pesos)
-            plt.scatter(x_test[:, 0], resultados)
-            plt.yticks(range(0,5))
-            plt.show()
 
+            # Validation =======================================
+
+            mm = np.size(x_validation, 0)
+
+            resultados = clasificar(x_validation, pesos)
+            L_validation = np.power((t_validation - resultados), 2)
+            loss_validation = (1 / mm) * np.sum(L_validation)
+            print()
+            print("Validation Loss epoch", i, ":", loss_validation)
+
+            if prevLoss==None:
+                prevLoss = loss_validation
+            elif loss_validation<=prevLoss:
+                prob = randint(0, 100)/100
+                
+                # hacemos una parada temprana en base a una probabilidad
+                if prob<(i/epochs): 
+                    plt.scatter(x_validation[:, 0], resultados)
+                    plt.title("Aproximacion con datos de validacion")
+                    plt.show()
+                    break
+                else:
+                    prevLoss = loss_validation
+            else:
+                prevLoss = loss_validation
+    
         # Extraemos los pesos a variables locales
         w1 = pesos["w1"]
         b1 = pesos["b1"]
@@ -152,10 +155,12 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
         dL_dw2 = h.T.dot(dL_dy)                         # Ajuste para w2
         dL_db2 = np.sum(dL_dy, axis=0, keepdims=True)   # Ajuste para b2
 
-        dL_dh = dL_dy.dot(w2.T)
+        dL_dh = dL_dy.dot(w2.T)       
         
         dL_dz = dL_dh       # El calculo dL/dz = dL/dh * dh/dz. La funcion "h" es la funcion de activacion de la capa oculta,
         dL_dz[z <= 0] = 0   # para la que usamos ReLU. La derivada de la funcion ReLU: 1(z > 0) (0 en otro caso)
+
+        #dL_dz = dL_dh *sigmoid(z)*(1-sigmoid(z))            #PAra funcion sigmoide
 
         dL_dw1 = x_train.T.dot(dL_dz)                         # Ajuste para w1
         dL_db1 = np.sum(dL_dz, axis=0, keepdims=True)   # Ajuste para b1
@@ -174,10 +179,22 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
         pesos["b2"] = b2
     
     # Termino el ciclo de entrenamiento
-    print()
+    # Testing ========================================
+    mm = np.size(x_test, 0)
+    resultados = clasificar(x_test, pesos)
+    L_test = np.power((t_test - resultados), 2)
+    loss_test = (1 / mm) * np.sum(L_test)
+    print(" * Testing loss epoch ",i,":",loss_test)
+    plt.scatter(x_test[:, 0], resultados)
+    plt.title("Test")
+    plt.show()
     print(f" * Termino el entrenamiento en {i} epochs")
+
     
     
+def sigmoid(x):
+    sig = np.where(x < 0, np.exp(x)/(1 + np.exp(x)), 1/(1 + np.exp(-x)))
+    return sig   
     
 
 def iniciar(numero_clases, numero_ejemplos, graficar_datos):
@@ -188,35 +205,31 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos):
 
     # Graficamos los datos si es necesario
     if graficar_datos:
-        # Parametro: "c": color (un color distinto para cada clase en t)
-        #plt.scatter(x_train[:, 0], x_train[:, 1])
         plt.scatter(x_train[:, 0], t_train)
         plt.yticks(range(0,5))
         plt.title("Entrenamiento")
         plt.show()
         
-        #plt.scatter(x_validation[:, 0], x_validation[:, 1])
         plt.scatter(x_validation[:, 0], t_validation)
         plt.yticks(range(0,5))
         plt.title("Validacion")
         plt.show()
         
-        #plt.scatter(x_test[:, 0], x_test[:, 1])
         plt.scatter(x_test[:, 0], t_test)
         plt.yticks(range(0,5))
         plt.title("Test")
         plt.show()
 
     # Inicializa pesos de la red
-    NEURONAS_CAPA_OCULTA = 100
+    NEURONAS_CAPA_OCULTA = 100    #100 para RELU
     NEURONAS_ENTRADA = 1
     DETENCION_TEMPRANA = 500
     pesos = inicializar_pesos(n_entrada=NEURONAS_ENTRADA, n_capa_2=NEURONAS_CAPA_OCULTA, n_capa_3=numero_clases)
 
     # Entrena
-    LEARNING_RATE=1
-    EPOCHS=10000
+    LEARNING_RATE=0.1
+    EPOCHS=10000  #10000 para RELU
     train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA)
 
 
-iniciar(numero_clases=1, numero_ejemplos=400, graficar_datos=False)
+iniciar(numero_clases=1, numero_ejemplos=400, graficar_datos=True)
