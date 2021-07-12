@@ -8,7 +8,7 @@ from random import randint
 # (https://cs231n.github.io/neural-networks-case-study/)
 
 def generar_datos_clasificacion(cantidad_ejemplos, cantidad_clases):
-    FACTOR_ANGULO = 0.79
+    FACTOR_ANGULO = 0.3
     AMPLITUD_ALEATORIEDAD = 0.1
 
     # Calculamos la cantidad de puntos por cada clase, asumiendo la misma cantidad para cada 
@@ -51,7 +51,7 @@ def generar_datos_clasificacion(cantidad_ejemplos, cantidad_clases):
     return x, t
 
 def generar_datos_clasificacion2(cantidad_ejemplos, cantidad_clases):
-    FACTOR_ANGULO = 1
+    FACTOR_ANGULO = 0.3
     AMPLITUD_ALEATORIEDAD = 0.1
 
     # Calculamos la cantidad de puntos por cada clase, asumiendo la misma cantidad para cada 
@@ -139,18 +139,19 @@ def clasificar(x, pesos,sig):
     # Tomamos el primero de los maximos (podria usarse otro criterio, como ser eleccion aleatoria)
     # Nuevamente, dado que max_scores puede contener varios renglones (uno por cada ejemplo),
     # retornamos la primera columna
-    return max_scores#[:, 0]
+    return max_scores # [:, 0]
 
 # x: n entradas para cada uno de los m ejemplos(nxm)
 # t: salida correcta (target) para cada uno de los m ejemplos (m x 1)
 # pesos: pesos (W y b)
-def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, learning_rate, epochs, detencion_temprana,sig):
+def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, learning_rate, epochs, detencion_temprana,tol_detencion_temprana):
     # Cantidad de filas (i.e. cantidad de ejemplos)
     m = np.size(x_train, 0)
     
     # Cantidad de epochs a las cuales hay que revisar con el conjunto de validacion
     # para hacer una detencion temprana del entrenamiento si ya no hay mejoras
     N = detencion_temprana
+    tolerancia = tol_detencion_temprana
     
     prevAccuracy = None # precision minima de prediccion
     
@@ -219,17 +220,14 @@ def train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, l
             
             if prevAccuracy==None:
                 prevAccuracy = accuracy_validation
-            elif accuracy_validation<=prevAccuracy:
+                
+            elif accuracy_validation < (prevAccuracy*(1-tolerancia)):
                 # empezo a empeorar
                 print("Empeoro!!")
-                prob = randint(0, 10)/10
-                
-                # hacemos una parada temprana en base a una probabilidad
-                if prob<(i/epochs): # print(prob,i/epochs)
-                    break
-                else:
-                    prevAccuracy = accuracy_validation
+                break
+            
             else:
+                # print(accuracy_validation,"<-",prevAccuracy,"margen",prevAccuracy*(1-tolerancia))
                 prevAccuracy = accuracy_validation
             
             
@@ -323,13 +321,17 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos,sig=False):
     # Inicializa pesos de la red
     NEURONAS_CAPA_OCULTA = 100
     NEURONAS_ENTRADA = 2
-    DETENCION_TEMPRANA = 500
     pesos = inicializar_pesos(n_entrada=NEURONAS_ENTRADA, n_capa_2=NEURONAS_CAPA_OCULTA, n_capa_3=numero_clases)
 
     # Entrena
     LEARNING_RATE=1
     EPOCHS=10000
-    train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA,sig)
+    
+    DETENCION_TEMPRANA = 500 # se valida cada <DETENCION_TEMPRANA> epochs
+    TOL_DETENCION_TEMPRANA = 1/100 # si la precision empeora,
+                                   # con una tolerancia de 1%, se detiene
+    
+    train(x_train, t_train, x_test, t_test, x_validation, t_validation, pesos, LEARNING_RATE, EPOCHS, DETENCION_TEMPRANA,TOL_DETENCION_TEMPRANA)
 
 
 iniciar(numero_clases=3, numero_ejemplos=400, graficar_datos=True)
