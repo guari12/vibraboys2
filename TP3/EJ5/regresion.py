@@ -21,9 +21,15 @@ def generar_datos_regresion(cantidad_ejemplos):
 
     # Se generan datos aleatorios siguiendo una linea como valor medio 
     x1 = np.linspace(0, 5, cantidad_ejemplos)
-    x2 = np.power(x1,2) + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)   
 
-    #np.power(x1,2)
+    # Descomentar la siguiente linea para implementar una funcion polinómica de uno solo término
+    # La aproximacion es mas eficeinte si se implementa con sigmoide
+    x2 = np.power(x1,2) + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)
+
+    # Descomentar la siguiente linea para implementar regresion a una funcion lineal 
+    # La aproximación es mas eficiente si se implementa con ReLu  
+    #x2 = x1 + AMPLITUD_ALEATORIEDAD * randomgen.standard_normal(size=cantidad_ejemplos)   
+
 
     # Generamos un rango con los subindices de cada punto generado.
     indices = range(0, cantidad_ejemplos)
