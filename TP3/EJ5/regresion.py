@@ -215,17 +215,14 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos, sig=False):
     # Graficamos los datos si es necesario
     if graficar_datos:
         plt.scatter(x_train[:, 0], t_train)
-        plt.yticks(range(0,5))
         plt.title("Entrenamiento")
         plt.show()
         
         plt.scatter(x_validation[:, 0], t_validation)
-        plt.yticks(range(0,5))
         plt.title("Validacion")
         plt.show()
         
         plt.scatter(x_test[:, 0], t_test)
-        plt.yticks(range(0,5))
         plt.title("Test")
         plt.show()
 
